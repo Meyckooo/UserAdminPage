@@ -9,11 +9,11 @@ $activeForm = $_SESSION['active_form'] ?? 'login';
 
 session_unset();
 
-function showError($error){
+function showError(string $error): string {
     return !empty($error) ? "<p class='error-message'>$error</p>" : '';
 }
 
-function isActiveForm($formName, $activeForm){
+function isActiveForm(string $formName, string $activeForm): string {
     return $formName === $activeForm ? 'active' : '';
 }
 
