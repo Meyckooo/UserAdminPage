@@ -36,7 +36,7 @@ function isActiveForm(string $formName, string $activeForm): string {
                   <h2>Login</h2>
                   <?= showError($errors['login']); ?>
                 <form action="login_register.php" method="post">
-                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="text" name="username" placeholder="Username" required>
                     <input type="password" name="password" placeholder="Password" required>
                     <button type="submit" name="login">Login</button>
                     <p>Don't have an account? <a href="#" onclick="showForm('register-form')">Register</a></p>
@@ -48,6 +48,7 @@ function isActiveForm(string $formName, string $activeForm): string {
                  <?= showError($errors['register']); ?>
                 <form action="login_register.php" method="post">
                     <input type="text" name="name" placeholder="Name" required>
+                    <input type="text" name="username" placeholder="Username" required>
                     <input type="email" name="email" placeholder="Email" required>
                     <input type="password" name="password" placeholder="Password" required>
                     <select name="role" required>
