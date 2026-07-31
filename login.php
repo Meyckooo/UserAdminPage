@@ -24,7 +24,7 @@ function isActiveForm(string $formName, string $activeForm): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UserAdmin Page</title>
+    <title>login_page</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 

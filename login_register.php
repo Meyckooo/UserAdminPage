@@ -19,7 +19,7 @@ require_once 'config/config.php';
             $conn->query("INSERT INTO users (name, username, email, password, role) VALUES ('$name', '$username', '$email', '$password', '$role')");
         }
 
-        header("Location: index.php");
+        header("Location: login.php");
         exit();
     }
 
@@ -48,7 +48,7 @@ if(isset($_POST['login'])){
     // ELSE NANI SIYA
     $_SESSION['login_error'] = 'Incorrect Username or password';
     $_SESSION['active_form'] = 'login';
-    header("Location: index.php");
+    header("Location: login.php");
     exit();
 
 }
