@@ -9,6 +9,10 @@
     <?php
             $username = "John Doe";
             $username2 = "Ivan Smith";
+
+            $nameArray = ["John", "Doe", "Smith"];
+
+            $phone = "123-456-7890";
             
             // String length
             $length = strlen($username);
@@ -43,6 +47,23 @@
             $comparison = strcmp($username , $username2);
             echo "<br> <br>The comparison result is: " . $comparison;
 
+            // String to strpos -> Find the position of the first occurrence of a substring in a string
+            $position = strpos($username, "Doe");
+            echo "<br> <br>The position of 'Doe' in the username is: " . $position;
+
+            //String to substr -> Return part of a string (variable, starting, end)
+            $substring = substr($username, 5, 8);
+            echo "<br> <br>The substring of the username is: " . $substring;
+
+            // String to explode -> Split a string by a string
+            $explore = explode(" ", $username);
+            foreach($explore as $name){
+                echo "<br> <br>The exploded username is: " . $name;
+            }
+
+            // String to implode -> Join array elements with a string
+            $implode = implode(" ", $nameArray);
+            echo "<br> <br>The imploded username is: " . $implode;
     ?>
 </body>
 </html>
