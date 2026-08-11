@@ -33,11 +33,14 @@ function isActiveForm(string $formName, string $activeForm): string {
         <div class="container_form">
 
             <div class="form_box <?= isActiveForm('login', $activeForm); ?>" id="login-form">
-                  <h2>Login</h2>
-                  <?= showError($errors['login']); ?>
+                <h2>Login</h2>
+                <?= showError($errors['login']); ?>
                 <form action="login_register.php" method="post">
                     <input type="text" name="username" placeholder="Username" required>
-                    <input type="password" name="password" placeholder="Password" required>
+                    <div class="login_input_field">
+                        <input id="password" type="password" name="password" placeholder="Password" required>
+                        <i><img src="assets/images/eyeclose.png" id="eyeicon"></i>
+                    </div>
                     <button type="submit" name="login">Login</button>
                     <p>Don't have an account? <a href="#" onclick="showForm('register-form')">Register</a></p>
                 </form>
@@ -45,12 +48,15 @@ function isActiveForm(string $formName, string $activeForm): string {
 
             <div class="form_box <?= isActiveForm('register', $activeForm); ?>" id="register-form">
                 <h2>Register</h2>
-                 <?= showError($errors['register']); ?>
+                <?= showError($errors['register']); ?>
                 <form action="login_register.php" method="post">
                     <input type="text" name="name" placeholder="Name" required>
                     <input type="text" name="username" placeholder="Username" required>
                     <input type="email" name="email" placeholder="Email" required>
-                    <input type="password" name="password" placeholder="Password" required>
+                    <div class="login_input_field">
+                        <input id="password" type="password" name="password" placeholder="Password" required>
+                        <i><img src="assets/images/eyeclose.png" id="eyeicon"></i>
+                    </div>
                     <select name="role" required>
                         <option value="">--Select Role--</option>
                         <option value="user">User</option>
@@ -64,10 +70,9 @@ function isActiveForm(string $formName, string $activeForm): string {
     </div>
 
 
-    <script src="assets/js/script.min.js"></script>
+    <script src="assets/js/script.js"></script>
 
     <!-- https://www.youtube.com/watch?v=LiomRvK7AM8 -->
-   
 </body>
 
 </html>

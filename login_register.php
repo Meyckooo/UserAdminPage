@@ -5,8 +5,9 @@ require_once 'config/config.php';
 
     if (isset($_POST['register'])){
             $name = $_POST['name'];
-            $username = $_POST['username'];
+            $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
             $email = $_POST['email'];
+            // If ganahan ka naka hash ang password sa database
             $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
             $role = $_POST['role'];
 
@@ -31,6 +32,7 @@ if(isset($_POST['login'])){
     // mao ni IF sa ELSE naa sa ubos
     if ($result->num_rows > 0){
         $user = $result->fetch_assoc();
+        // If naka hash ang password kani gamita
         if (password_verify($password, $user['password'])){
         $_SESSION['name'] = $user['name'];
         $_SESSION['username'] = $user['username'];
