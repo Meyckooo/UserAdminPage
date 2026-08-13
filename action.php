@@ -2,8 +2,7 @@
 
 <?php
 session_start();
-
-include "config/config.php";
+require 'config/config.php';
 
 // ADD USERS FROM DATABASE
 if(isset($_POST['add'])){
@@ -23,11 +22,11 @@ if(isset($_POST['update'])){
     $id = $_GET['id'];
     $name = $_POST['name'];
     $username = $_POST['username'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $newPassword = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
     $email = $_POST['email'];
     $role = $_POST['role'];
 
-    mysqli_query($conn, "UPDATE users set name='$name', username='$username', password='$password', email='$email', role='$role' WHERE id= $id ");
+    mysqli_query($conn, "UPDATE users SET name='$name', username='$username', password='$newPassword', email='$email', role='$role' WHERE id= $id ");
     header("Location: admin_page.php");
     exit;
 }

@@ -22,6 +22,7 @@ $user = mysqli_fetch_assoc($query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit User</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="node_modules/sweetalert2/dist/sweetalert2.min.css">
 </head>
 
 <body>
@@ -30,14 +31,15 @@ $user = mysqli_fetch_assoc($query);
             <div class="eu_con">
                 <div class="eu_info">
                     <h1>Edit User</h1>
-                    <form action="action.php?id=<?= $id ?>" method="POST">
+                    <form id="editUserForm" action="action.php?id=<?= $id ?>" method="POST">
+                        <input type="hidden" name="update" value="1">
                         <input type="text" name="name" placeholder="Name" value="<?= $user['name'] ?>" required>
                         <input type="text" name="username" placeholder="Username" value="<?= $user['username'] ?>" required>
                         <input type="email" name="email" placeholder="Email" value="<?= $user['email'] ?>" required>
-                        <input type="password" name="password" placeholder="Password" value="<?= $user['password'] ?>" required>
+                        <input type="password" name="new_password" placeholder="New Password" value="">
                         <input type="text" name="role" placeholder="Role" value="<?= $user['role'] ?>" required>
                         <div class="btn_box">
-                            <button type="submit" name="update">Update User</button>
+                            <button type="submit">Update User</button>
                             <a href="admin_page.php" class="global_btn">Cancel</a>
                         </div>
                     </form>
@@ -45,6 +47,10 @@ $user = mysqli_fetch_assoc($query);
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/script.js"></script>
+    <script src="node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
 
 </body>
 

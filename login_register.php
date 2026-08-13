@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-require_once 'config/config.php';
+require 'config/config.php';
 
     if (isset($_POST['register'])){
             $name = $_POST['name'];
