@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+$base_path = './';
 require_once 'header.php';
 ?>
 
@@ -15,6 +15,7 @@ require_once 'header.php';
 </head>
 
 <body>
+    <?php include $base_path . 'includes/sidebar.php'; ?>
     <div id="add_user">
         <div class="wrapper">
             <div class="au_con">
@@ -35,6 +36,8 @@ require_once 'header.php';
             </div>
         </div>
     </div>
+
+    <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
 
 </body>
 

@@ -7,7 +7,6 @@ $base_path = "./";
 
 ?>
 
-
 <script src="<?php echo $base_path; ?>../assets/js/sidebar_button.js"></script>
 
 <div class="sidebar">

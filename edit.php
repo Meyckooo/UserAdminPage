@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+$base_path = './';
 require_once 'header.php';
 include "config/config.php";
 
@@ -26,6 +26,7 @@ $user = mysqli_fetch_assoc($query);
 </head>
 
 <body>
+    <?php include $base_path . 'includes/sidebar.php'; ?>
     <div id="edit_user">
         <div class="wrapper">
             <div class="eu_con">
@@ -49,6 +50,7 @@ $user = mysqli_fetch_assoc($query);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
     <script src="assets/js/script.js"></script>
     <script src="node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
 
