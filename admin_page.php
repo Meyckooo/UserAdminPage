@@ -1,4 +1,6 @@
 <?php
+$base_path = "./";
+
 session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: index.php");
@@ -25,6 +27,7 @@ require_once 'header.php';
 </head>
 
 <body class="admin_page">
+    <?php include $base_path . 'includes/sidebar.php'; ?>
 
     <div id="user-accounts">
         <div class="wrapper">
@@ -47,26 +50,28 @@ require_once 'header.php';
                             </tr>
                         </thead>
 
-                        <?php 
+                        <?php
                         $no = 1;
                         while ($user = mysqli_fetch_assoc($query)) : ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= $user['name'] ?></td>
-                            <td><?= $user['username'] ?></td>
-                            <td><?= $user['email'] ?></td>
-                            <td><?= $user['role'] ?></td>
-                            <td>
-                                <a class="edit_btn" href="edit.php?id=<?= $user['id'] ?>">Edit</a>
-                                <a class="delete_btn" onclick="return confirm('Are you sure you want to delete this user?')" href="action.php?id=<?= $user['id'] ?>">Delete</a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= $user['name'] ?></td>
+                                <td><?= $user['username'] ?></td>
+                                <td><?= $user['email'] ?></td>
+                                <td><?= $user['role'] ?></td>
+                                <td>
+                                    <a class="edit_btn" href="edit.php?id=<?= $user['id'] ?>">Edit</a>
+                                    <a class="delete_btn" onclick="return confirm('Are you sure you want to delete this user?')" href="action.php?id=<?= $user['id'] ?>">Delete</a>
+                                </td>
+                            </tr>
                         <?php endwhile; ?>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="assets/js/sidebar_button.js"></script>
 
 </body>
 

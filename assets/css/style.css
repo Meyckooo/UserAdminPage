@@ -53,6 +53,195 @@
         color: var(--white);
     }
 
+
+    /* SIDEBAR */
+
+    /* =========================================
+    SIDEBAR SIZING LAYOUT
+    ========================================= */
+    .sidebar {
+    position: fixed !important;
+    width: 280px;
+    transition:
+    width 0.3s ease-in-out,
+    padding 0.3s ease-in-out;
+    white-space: nowrap;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: 100%;
+    background: var(--primary-color);
+    }
+
+    /* Collapsed state, added/removed by JS */
+
+    .sidebar.collapsed {
+    width: 0;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    }
+
+    .sidebar.collapsed .sidebar-logo,
+    .sidebar.collapsed .menu-list,
+    .sidebar.collapsed > div:first-child {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-in-out;
+    }
+
+    /* Arrow toggle button, injected via JS */
+    .sidebar-toggle {
+    position: absolute;
+    top: 50%;
+    right: -20px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 60px;
+    background: #2c2f38;
+    color: #fff;
+    border: none;
+    opacity: 0.4;
+    border-radius: 0 6px 6px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .sidebar-toggle:hover {
+    background: #000;
+    opacity: 1;
+    }
+
+    .toggle-arrow {
+    display: inline-block;
+    font-size: 14px;
+    transition: transform 0.3s ease-in-out;
+    }
+
+    .sidebar.collapsed .toggle-arrow {
+    transform: rotate(180deg);
+    }
+
+    .main_logo {
+    border-bottom: 1px solid #fff;
+    }
+
+    .sidebar-logo {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    max-height: 65px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    }
+
+    .sidebar ul{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-block: 40px;
+    padding-inline: 15px;
+    }
+
+    .menu-list li::marker {
+    font-size: 0;
+    }
+
+    .sidebar ul li {
+    cursor: pointer;
+    }
+
+    .sidebar ul li a {
+    position: relative;
+    display: block !important;
+    padding: 11px 36px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    z-index: 1;
+    text-transform: Capitalize;
+    cursor: pointer;
+    }
+
+    .sidebar ul li a:before {
+    position: absolute;
+    top: 55%;
+    left: 8px;
+    transform: translateY(-50%);
+    filter: brightness(0) invert(1);
+    transition: all 0.5s ease-in-out;
+    }
+
+    .sidebar li .my_acc:before {
+    content: url(../images/icon/account.png);
+    }
+    .sidebar li .admin_tools:before {
+    content: url(../images/icon/tools.png);
+    }
+    .sidebar li .user_acc:before {
+    content: url(../images/icon/user.png);
+    }
+    .sidebar li .store_dashboard:before {
+    content: url(../images/icon/dashboard.png);
+    }
+    .sidebar li .sidebar_logout:before {
+    content: url(../images/icon/logout.png);
+    }
+
+    .sidebar ul li a:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    background-color: #fff;
+    transition: all 0.5s ease-in-out;
+    color: #ffffff;
+    z-index: -1;
+    border-radius: inherit;
+    }
+
+    .sidebar ul li a:active::before,
+    .sidebar ul li a:hover::before,
+    .sidebar ul li.current_page_item > a:before {
+    filter: unset;
+    pointer-events: none;
+    }
+
+    .sidebar ul li a:hover:after {
+    width: 100%;
+    }
+
+    .menu-link.module-locked {
+    opacity: 0.55;
+    border-left: 2px dashed rgba(255, 255, 255, 0.15);
+    }
+
+    .menu-link.module-locked:hover {
+    background-color: rgba(220, 38, 38, 0.1);
+    color: #fca5a5;
+    }
+
+    .sidebar ul li a:active:after,
+    .sidebar ul li a:hover:after,
+    .sidebar ul li.current_page_item > a {
+    background: #fff;
+    color: #000;
+    pointer-events: none;
+    }
+
+    .sidebar ul li a:hover {
+    color: #000;
+    }
+
     .form_parent{
     display: block;
     min-height: 100vh;
@@ -455,7 +644,7 @@
     color: #666666 !important;
     cursor: not-allowed !important;
     opacity: 0.6;
-}
+    }
 
     .btn_box button[type="submit"]:hover {
     background-color: #5c7ee0; /* Slightly darker shade on hover */
