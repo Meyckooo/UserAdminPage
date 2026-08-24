@@ -13,7 +13,7 @@ if(isset($_POST['add'])){
     $role = $_POST['role'];
 
     mysqli_query($conn, "INSERT INTO users (name, username, password, email, role) VALUES ('$name', '$username', '$password', '$email', '$role')");
-    header("Location: admin_page.php");
+    header("Location: user_account.php");
     exit;
 }
 
@@ -27,7 +27,7 @@ if(isset($_POST['update'])){
     $role = $_POST['role'];
 
     mysqli_query($conn, "UPDATE users SET name='$name', username='$username', password='$newPassword', email='$email', role='$role' WHERE id= $id ");
-    header("Location: admin_page.php");
+    header("Location: user_account.php");
     exit;
 }
 
@@ -41,7 +41,7 @@ if(isset($_GET['id'])){
     $role = $_POST['role'];
 
     mysqli_query($conn, "DELETE FROM users WHERE id= $id ");
-    header("Location: admin_page.php");
+    header("Location: user_account.php");
     exit;
 }
 

@@ -23,15 +23,15 @@ require_once 'header.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Page</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/style.css">
 </head>
 
-<body class="admin_page">
+<body class="user_account">
     <?php include $base_path . 'includes/sidebar.php'; ?>
 
-    <div id="user-accounts">
+    <div id="main">
         <div class="wrapper">
-            <div class="ua_con">
+            <div class="main_con">
                 <div class="table_header_info">
                     <h2>User List</h2>
                     <a href="add_user.php" class="global_btn">Add User</a>
@@ -71,7 +71,7 @@ require_once 'header.php';
         </div>
     </div>
 
-    <script src="assets/js/sidebar_button.js"></script>
+    <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
 
 </body>
 

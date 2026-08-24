@@ -27,9 +27,9 @@ $user = mysqli_fetch_assoc($query);
 
 <body>
     <?php include $base_path . 'includes/sidebar.php'; ?>
-    <div id="edit_user">
+    <div id="main">
         <div class="wrapper">
-            <div class="eu_con">
+            <div class="main_con">
                 <div class="eu_info">
                     <h1>Edit User</h1>
                     <form id="editUserForm" action="action.php?id=<?= $id ?>" method="POST">
@@ -41,7 +41,7 @@ $user = mysqli_fetch_assoc($query);
                         <input type="text" name="role" placeholder="Role" value="<?= $user['role'] ?>" required>
                         <div class="btn_box">
                             <button type="submit">Update User</button>
-                            <a href="admin_page.php" class="global_btn">Cancel</a>
+                            <a href="user_account.php" class="global_btn">Cancel</a>
                         </div>
                     </form>
                 </div>

@@ -1,5 +1,5 @@
 <?php
-$base_path = "./";
+$base_path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 
 // /** @var string $base_path */
 // /** @var bool $isSuperAdmin */
@@ -33,8 +33,8 @@ $base_path = "./";
 
         <!-- Module 3: USER ACCOUNTS -->
             <li class="menu-item mb-2">
-                <a href="<?php echo $base_path; ?>/user_accounts.php"
-                    data-subpages="add_user_account.php, edit_user_account.php"
+                <a href="<?php echo $base_path; ?>/user_account.php"
+                    data-subpages="add_user.php, edit.php"
                     class="user_acc menu-link d-flex align-items-center justify-content-between">
                     User Accounts
                 </a>
@@ -46,6 +46,15 @@ $base_path = "./";
                     Dashboard
                 </a>
             </li> 
+
+            <!-- Module 5: MODAL ITEM -->
+            <li class="menu-item mb-2">
+                <a href="<?php echo $base_path; ?>/modal_item.php"
+                    data-subpages="add_user.php, edit.php"
+                    class="user_acc menu-link d-flex align-items-center justify-content-between">
+                    Modal Item
+                </a>
+            </li>
 
         <li class="menu-item mb-2">
             <a href="<?php echo $base_path; ?>logout.php" class="sidebar_logout menu-link d-flex align-items-center justify-content-between">

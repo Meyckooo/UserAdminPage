@@ -22,6 +22,15 @@
         overflow: hidden;
     }
 
+    main{
+        position: relative;
+    }
+
+    .main_con{
+        min-height: 500px;
+        padding: 40px 0;
+    }
+
     .wrapper{
         width: 100%;
         max-width: 1400px;
@@ -344,7 +353,7 @@
     font-family: var(--font1);
     }
 
-    .user_page, .admin_page{
+    .user_page, .user_account{
     background: #fff;
     }
 
@@ -529,7 +538,6 @@
     gap: 15px;
     padding: 20px 15px;
     background: var(--primary-color);
-    margin-top: 50px;
     border-radius: 15px 15px 0 0;
     border-bottom: 2px solid rgba(255,255,255,0.3);
     }
