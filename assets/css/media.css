@@ -1,0 +1,40 @@
+/* Tablet & Small Laptops (<= 1024px) */
+@media screen and (max-width: 1024px) {
+    .item_parent {
+        flex-direction: column; /* Stacks form on top of table */
+        align-items: center;
+        gap: 20px;
+    }
+
+    .item_form_container {
+        width: 100%;
+        max-width: 350px;
+        /* DISABLED STICKY & SCROLLING HERE */
+        position: static !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
+
+    .item_table_details {
+        width: 100%;
+    }
+}
+
+/* Mobile Screens (<= 600px) */
+@media screen and (max-width: 600px) {
+    .item_form_container {
+        max-width: 100%;
+        padding: 16px;
+    }
+
+    .styled_item_table th, 
+    .styled_item_table td {
+        padding: 10px 12px;
+        font-size: 0.82rem;
+    }
+
+    .btn-submit {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+}
