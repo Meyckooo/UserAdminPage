@@ -19,7 +19,19 @@
     body{
         font-family: var(--font1);
         position: relative;
-        overflow: hidden;
+        overflow-x: hidden;
+    }
+
+    ul li::marker{font-size: 0;}
+
+    .text-center {
+        text-align: center;
+    }
+    .text-left {
+        text-align: left;
+    }
+    .text-right {
+        text-align: right;
     }
 
     main{
@@ -371,10 +383,6 @@
     gap: 12px;
     }
 
-    .header_content{
-        
-    }
-
     .content_page h1{
     font-size: 50px;
     font-family: var(--font1);
@@ -702,4 +710,227 @@
     width: fit-content;
     height: auto;
     cursor: pointer;
+    }
+
+    /*ITEM */
+
+    #main .main_item_con{
+        padding:0;
+    }
+
+    .item_right_btns {
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
+    }
+    .item_header {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    gap: 15px;
+    align-items: center;
+    }
+    .item_details_left {
+    position: relative;
+    width: 100%;
+    max-width: 220px;
+    min-height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    border-radius: 16px;
+    }
+    .item_details_left .item_code span {
+    font: 700 40px/100% var(--font1);
+    color: #fff;
+    }
+
+    .item_right_btns ul {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: stretch;
+    }
+    .item_right_btns ul li:nth-child(4) a {
+    width: 130px;
+    }
+
+.item_parent {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    width: 100%;
+    position: relative;
+}
+
+    /* Form Styling (Left Side) */
+.item_form_container {
+    width: 300px;
+    flex-shrink: 0;
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+
+    /* Lock form on screen while scrolling down */
+    position: sticky;
+    top: 20px; 
+
+    /* Force height constraint & enable scrolling on left side ONLY */
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+    /* Custom Scrollbar for Left Form */
+.item_form_container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.item_form_container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+    .item_form_container h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    }
+
+    .locator-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    }
+
+    .locator-form-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--text-color);
+    }
+
+    .locator-form-group input {
+    font-family: var(--font1);
+    padding: 10px 12px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+    }
+
+    .locator-form-group input:focus {
+    border-color: var(--primary-color);
+    }
+
+    .btn-submit {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font1);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    }
+
+    .btn-submit:hover {
+    background-color: #5c7ce0;
+    }
+
+    /* Container responsive wrapper */
+ .item_table_details {
+    flex: 1;
+    min-width: 0; /* Prevents overflow breaking parent width */
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.styled_item_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+    /* Header styles */
+    .styled_item_table thead tr {
+    background-color: var(--primary-color);
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    }
+
+    .styled_item_table th {
+    padding: 14px 16px;
+    font-weight: 600;
+    }
+
+    /* Body cell styles */
+    .styled_item_table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--secondary-color);
+    color: var(--text-color);
+    }
+
+    /* Zebra striping for better readability */
+    .styled_item_table tbody tr:nth-of-type(even) {
+    background-color: #f9fbfd;
+    }
+
+    /* Row hover state */
+    .styled_item_table tbody tr:hover {
+    background-color: #f0f4fe;
+    transition: background-color 0.2s ease-in-out;
+    }
+
+    /* Clean corner rounding on headers */
+    .styled_item_table th:first-child {
+    border-top-left-radius: 8px;
+    }
+
+    .styled_item_table th:last-child {
+    border-top-right-radius: 8px;
+    }
+
+    /* Remove border on last row */
+    .styled_item_table tbody tr:last-of-type td {
+    border-bottom: none;
+    }
+
+    /* Delete Button Styles */
+    .btn-delete {
+    background-color: transparent;
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    }
+
+    /* Hover effect */
+    .btn-delete:hover {
+    background-color: var(--danger-color);
+    color: var(--white);
+    transform: scale(1.1);
+    }
+
+    /* Active click state */
+    .btn-delete:active {
+    transform: scale(0.95);
     }

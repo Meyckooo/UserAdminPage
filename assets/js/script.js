@@ -82,4 +82,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const tableContainer = document.querySelector('.item_table_details');
+    const formContainer = document.querySelector('.item_form_container');
+
+    if (!tableContainer || !formContainer) return;
+
+    // Observe table height dynamically
+    const observer = new ResizeObserver(() => {
+        const tableHeight = tableContainer.offsetHeight;
+
+        if (tableHeight >= 500) {
+            // Apply sticky position and height cap
+            formContainer.style.position = 'sticky';
+            formContainer.style.top = '20px';
+            formContainer.style.maxHeight = 'calc(100vh - 40px)';
+            formContainer.style.overflowY = 'auto';
+        } else {
+            // Revert back to normal
+            formContainer.style.position = 'static';
+            formContainer.style.maxHeight = 'none';
+            formContainer.style.overflowY = 'visible';
+        }
+    });
+
+    observer.observe(tableContainer);
+
 });
