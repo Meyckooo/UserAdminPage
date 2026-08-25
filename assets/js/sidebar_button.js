@@ -25,13 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 2. Pure JS Parent-Child Page Mapper
     const pageRelations = {
-        'user_accounts.php': [
-            'add_user_account.php', 
-            'edit_user_account.php', 
-            'view_user_account.php',
-            'user_permission_account.php' // <-- Gidungag diri ang subpage
+        'user_account.php': [
+            'add_user.php',  // <-- Gidungag diri ang subpage
+            'edit.php',
+            'permission.php'
         ],
-        'add_personnel.php': ['edit_personnel.php'],
         'my_account.php': ['edit_profile.php']
     };
 

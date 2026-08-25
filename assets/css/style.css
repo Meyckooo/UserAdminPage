@@ -74,6 +74,30 @@
         color: var(--white);
     }
 
+    .global_btn2{
+        display: block;
+        width: 90px;
+        padding: 0 10px;
+        height: auto;
+        background: transparent;
+        background: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        color: var(--white);
+        border-radius: 6px;
+        cursor: pointer;
+        font: 500 13px/40px var(--font1);
+        transition: all 0.3s ease-in-out;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .global_btn2:hover{
+        opacity: 1;
+        transform: scale(0.95);
+        background: transparent;
+        color: var(--primary-color);
+    }
+
 
     /* SIDEBAR */
 
@@ -435,7 +459,7 @@
     table {
     width: 100%;
     border-collapse: collapse;
-    text-align: left;
+    text-align: center;
     font-size: 14px;
     font-family: var(--font1);
     }
@@ -479,7 +503,8 @@
     Action Buttons (.edit_btn & .delete_btn)
     ---------------------------------- */
     .edit_btn, 
-    .delete_btn {
+    .delete_btn,
+    .permission_btn {
     display: inline-block;
     padding: 6px 14px;
     font-size: 13px;
@@ -500,6 +525,19 @@
 
     .edit_btn:hover {
     background-color: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-1px);
+    }
+
+    .permission_btn {
+    background-color: rgba(10, 241, 10, 0.15);
+    color: green;
+    border: 1px solid rgb(22, 218, 22);
+    margin-right: 6px;
+    }
+
+    .permission_btn:hover {
+    background-color: rgb(22, 218, 22);
     color: var(--white);
     transform: translateY(-1px);
     }
@@ -759,22 +797,22 @@
     width: 130px;
     }
 
-.item_parent {
+    .item_parent {
     display: flex;
     gap: 24px;
     align-items: flex-start;
     width: 100%;
     position: relative;
-}
+    }
 
     /* Form Styling (Left Side) */
-.item_form_container {
+    .item_form_container {
     width: 300px;
     flex-shrink: 0;
     background-color: var(--white);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
 
     /* Lock form on screen while scrolling down */
@@ -784,17 +822,17 @@
     /* Force height constraint & enable scrolling on left side ONLY */
     max-height: calc(100vh - 40px);
     overflow-y: auto;
-}
+    }
 
     /* Custom Scrollbar for Left Form */
-.item_form_container::-webkit-scrollbar {
+    .item_form_container::-webkit-scrollbar {
     width: 6px;
-}
+    }
 
-.item_form_container::-webkit-scrollbar-thumb {
+    .item_form_container::-webkit-scrollbar-thumb {
     background: var(--primary-color);
     border-radius: 4px;
-}
+    }
 
     .item_form_container h3 {
     margin-top: 0;
@@ -848,7 +886,7 @@
     }
 
     /* Container responsive wrapper */
- .item_table_details {
+    .item_table_details {
     flex: 1;
     min-width: 0; /* Prevents overflow breaking parent width */
     background-color: var(--white);
@@ -856,14 +894,14 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     overflow-x: auto;
     overflow-y: auto;
-}
+    }
 
-.styled_item_table {
+    .styled_item_table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
     text-align: left;
-}
+    }
 
     /* Header styles */
     .styled_item_table thead tr {
@@ -939,3 +977,393 @@
     .btn-delete:active {
     transform: scale(0.95);
     }
+
+    /* Modal Backdrop Overlay (Hidden by default) */
+    .modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    z-index: 9999; /* Ensure modal renders above sidebar and header */
+    }
+
+    /* Activated State (Triggered by JavaScript) */
+    .modal_overlay.active {
+    opacity: 1;
+    visibility: visible;
+    }
+
+    /* Modal Content Box */
+    .modal_content {
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transform: translateY(-20px);
+    transition: transform 0.25s ease;
+    }
+
+    .modal_overlay.active .modal_content {
+    transform: translateY(0);
+    }
+
+    /* Modal Header & Close Button */
+    .modal_header {
+    background-color: #7494ec;
+    color: #ffffff;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    }
+
+    .modal_header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    }
+
+    .modal_close {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    }
+
+    .modal_body {
+    padding: 20px;
+    }
+
+
+    /* Add Item CSS */
+
+    .lookup_modal_container {
+    width: 100%;
+    max-width: 1440px;
+    }
+
+    /* Lookup Modal Box Sizing (Wide Layout) */
+    #modal-add-item .modal_content {
+    max-width: 1100px; /* Expands modal width to fit lookup table */
+    width: 95%;
+    }
+
+    /* Dark Header Bar */
+    .lookup_header {
+    background-color: #1a2b4c; /* Deep Navy Header matching reference */
+    color: var(--white);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    }
+
+    .lookup_title_group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    }
+
+    .lookup_title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+    }
+
+    .btn_add_selected {
+    background-color: #2b56cb;
+    color: var(--white);
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    }
+
+    .btn_add_selected:hover {
+    background-color: #1e41a3;
+    }
+
+    /* Controls Toolbar */
+    .lookup_controls {
+    display: flex;
+    gap: 16px;
+    padding: 16px 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--secondary-color);
+    flex-wrap: wrap;
+    }
+
+    .search_input_wrapper {
+    flex: 1;
+    min-width: 250px;
+    }
+
+    .lookup_search_input {
+    width: 100%;
+    padding: 8px 14px;
+    border: 1.5px solid var(--primary-color);
+    border-radius: 6px;
+    font-family: var(--font1);
+    font-size: 0.9rem;
+    font-weight: 600;
+    outline: none;
+    box-sizing: border-box;
+    }
+
+    .search_filter_wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    }
+
+    .lookup_select {
+    padding: 8px 12px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 6px;
+    font-family: var(--font1);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+    outline: none;
+    background-color: #ffffff;
+    }
+
+    .btn_lookup_search,
+    .btn_lookup_scan {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: var(--font1);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    }
+
+    .btn_lookup_search {
+    background-color: #1a2b4c;
+    color: var(--white);
+    }
+
+    .btn_lookup_scan {
+    background-color: #1a2b4c;
+    color: var(--white);
+    }
+
+    .btn_lookup_search:hover,
+    .btn_lookup_scan:hover {
+    opacity: 0.9;
+    }
+
+    /* Table Area */
+    .lookup_table_wrapper {
+    max-height: 420px;
+    overflow-x: auto;
+    overflow-y: auto;
+    }
+
+    .styled_lookup_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: left;
+    white-space: nowrap;
+    }
+
+    .styled_lookup_table thead tr {
+    background-color: #ffffff;
+    color: #333333;
+    border-bottom: 2px solid var(--secondary-color);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    }
+
+    .styled_lookup_table th,
+    .styled_lookup_table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #eef2f7;
+    border-right: 1px solid #f0f0f0;
+    }
+
+    .styled_lookup_table th {
+    font-weight: 700;
+    }
+
+    .styled_lookup_table tbody tr{
+        background-color: #fcfdfe;
+    }
+
+    .styled_lookup_table tbody tr:hover {
+    background-color: #f0f4fe;
+    }
+
+    /* END OF MODAL ITEMS */
+
+    /* PERMISSION TABLE*/
+    /* Container Box */
+    .permissions_container {
+    width: 100%;
+    background-color: var(--white, #ffffff);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    }
+
+    /* Header Title */
+    .permissions_title {
+    text-align: center;
+    font-family: var(--font1, "Poppins", sans-serif);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0b2265; /* Dark navy color matching header */
+    margin-top: 0;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    }
+
+    /* Scrollable Wrapper */
+    .permissions_table_wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--secondary-color, #e2e2e2);
+    border-radius: 8px;
+    }
+
+    /* Table Design */
+    .styled_permissions_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font1, "Poppins", sans-serif);
+    font-size: 0.78rem;
+    white-space: nowrap;
+    }
+
+    .styled_permissions_table thead tr {
+    background-color: #0b2265; /* Dark Navy Blue Header */
+    color: #ffffff;
+    }
+
+    .styled_permissions_table th {
+    padding: 12px 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border-right: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .styled_permissions_table th:last-child {
+    border-right: none;
+    }
+
+    .styled_permissions_table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #eef2f7;
+    border-right: 1px solid #eef2f7;
+    color: var(--text-color, #333333);
+    }
+
+    .styled_permissions_table td.module_name {
+    font-weight: 600;
+    color: #1a2b4c;
+    }
+
+    .styled_permissions_table tbody tr:nth-of-type(even) {
+    background-color: #fcfdfe;
+    }
+
+    .styled_permissions_table tbody tr:hover {
+    background-color: #f0f4fe;
+    }
+
+    /* Custom Bullet Checkbox Styling */
+    .custom_checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #d0d7de;
+    border-radius: 50%; /* Rounded outer border */
+    outline: none;
+    cursor: pointer;
+    vertical-align: middle;
+    position: relative;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    }
+
+    /* Checked State - Solid Outer Border & Accent Color */
+    .custom_checkbox:checked {
+    background-color: #ffffff; /* White background inside */
+    border-color: #0075ff;    /* Active blue border */
+    }
+
+    /* Inner Bullet Circle (Replaces Checkmark) */
+    .custom_checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;               /* Bullet size */
+    height: 10px;
+    background-color: #0075ff; /* Active blue bullet fill */
+    border-radius: 50%;        /* Make inner fill a solid circle */
+    transform: translate(-50%, -50%); /* Perfectly center the bullet */
+    }
+
+    /* Focus State */
+    .custom_checkbox:focus {
+    box-shadow: 0 0 0 2px rgba(0, 117, 255, 0.2);
+    }
+
+    .permission_buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+    gap: 15px;
+    }
+
+    /* Status Badge Styling */
+    .status_badge {
+    display: inline-block;
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    }
+
+    /* Active Status - Emerald Green */
+    .status_active {
+    background-color: #e6f4ea;
+    color: #137333;
+    border: 1px solid #ceead6;
+    }
+
+    /* Inactive Status - Coral Red */
+    .status_inactive {
+    background-color: #fce8e6;
+    color: #c5221f;
+    border: 1px solid #fad2cf;
+    }
+
+    /* END */

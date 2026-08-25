@@ -5,8 +5,8 @@ require_once 'header.php';
 include "config/config.php";
 
 // Set og variable na ID para makuha nimo ang ID sa DATABASE
-$id = $_GET['id'];
-$query = mysqli_query($conn, "SELECT * FROM users WHERE id= $id");
+$id = $_GET['oUserid'];
+$query = mysqli_query($conn, "SELECT * FROM users WHERE oUserid= $id");
 
 // Ge kuha na diri ang data gikan sa Database base sa iyang variable na QUERY
 $user = mysqli_fetch_assoc($query);
@@ -39,6 +39,7 @@ $user = mysqli_fetch_assoc($query);
                         <input type="email" name="email" placeholder="Email" value="<?= $user['email'] ?>" required>
                         <input type="password" name="new_password" placeholder="New Password" value="">
                         <input type="text" name="role" placeholder="Role" value="<?= $user['role'] ?>" required>
+                        <input type="number" min="0" max="1" name="status" placeholder="Status" value="<?= $user['status'] ?>" required>
                         <div class="btn_box">
                             <button type="submit">Update User</button>
                             <a href="user_account.php" class="global_btn">Cancel</a>
@@ -51,7 +52,7 @@ $user = mysqli_fetch_assoc($query);
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script src="<?php echo $base_path; ?>assets/js/script.js"></script>
     <script src="node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
 
 </body>

@@ -10,9 +10,9 @@ $base_path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 <script src="<?php echo $base_path; ?>../assets/js/sidebar_button.js"></script>
 
 <div class="sidebar">
-    <a href="<?php echo $base_path; ?>index.php">
+    <a href="<?php echo $base_path; ?>/index.php">
         <div class="main_logo">
-            <img src="<?php echo $base_path; ?>assets/images/atlantichardware_logo_with_since1963.png" alt="Main_Logo" class="sidebar-logo">
+            <img src="<?php echo $base_path; ?>/assets/images/atlantichardware_logo_with_since1963.png" alt="Main_Logo" class="sidebar-logo">
         </div>
     </a>
 
@@ -34,7 +34,7 @@ $base_path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
         <!-- Module 3: USER ACCOUNTS -->
             <li class="menu-item mb-2">
                 <a href="<?php echo $base_path; ?>/user_account.php"
-                    data-subpages="add_user.php, edit.php"
+                    data-subpages="add_user.php, edit.php, permission.php"
                     class="user_acc menu-link d-flex align-items-center justify-content-between">
                     User Accounts
                 </a>
@@ -42,7 +42,7 @@ $base_path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 
         <!-- Module 4: STORE DASHBOARD - MAIN -->
             <li class="menu-item current_page_item mb-2">
-                <a href="<?php echo $base_path; ?>index.php" class="store_dashboard menu-link d-flex align-items-center justify-content-between">
+                <a href="<?php echo $base_path; ?>/index.php" class="store_dashboard menu-link d-flex align-items-center justify-content-between">
                     Dashboard
                 </a>
             </li> 
@@ -57,7 +57,7 @@ $base_path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
             </li>
 
         <li class="menu-item mb-2">
-            <a href="<?php echo $base_path; ?>logout.php" class="sidebar_logout menu-link d-flex align-items-center justify-content-between">
+            <a href="<?php echo $base_path; ?>/logout.php" class="sidebar_logout menu-link d-flex align-items-center justify-content-between">
                 Logout
             </a>
         </li>

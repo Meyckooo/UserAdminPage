@@ -7,10 +7,10 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-// need ni para maka sulod sa database kani na module
+// Database connection
 include "config/config.php";
 
-// Need ni Para ma display tong naa sa table Data
+// Fetch user data
 $query = mysqli_query($conn, "SELECT * FROM users");
 
 require_once 'header.php';
@@ -47,24 +47,32 @@ require_once 'header.php';
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Actions</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
-
-                        <?php
-                        $no = 1;
-                        while ($user = mysqli_fetch_assoc($query)) : ?>
-                            <tr>
-                                <td><?= $no++ ?></td>
-                                <td><?= $user['name'] ?></td>
-                                <td><?= $user['username'] ?></td>
-                                <td><?= $user['email'] ?></td>
-                                <td><?= $user['role'] ?></td>
-                                <td>
-                                    <a class="edit_btn" href="edit.php?id=<?= $user['id'] ?>">Edit</a>
-                                    <a class="delete_btn" onclick="return confirm('Are you sure you want to delete this user?')" href="action.php?id=<?= $user['id'] ?>">Delete</a>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
+                        <tbody>
+                            <?php
+                            $no = 1;
+                            while ($user = mysqli_fetch_assoc($query)) : ?>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= htmlspecialchars($user['name']) ?></td>
+                                    <td><?= htmlspecialchars($user['username']) ?></td>
+                                    <td><?= htmlspecialchars($user['email']) ?></td>
+                                    <td><?= htmlspecialchars($user['role']) ?></td>
+                                    <td>
+                                        <a class="edit_btn" href="edit.php?oUserid=<?= $user['oUserid'] ?>">Edit</a>
+                                        <a class="permission_btn" href="permission.php?oUserid=<?= $user['oUserid'] ?>">Permission</a>
+                                        <a class="delete_btn" onclick="return confirm('Are you sure you want to delete this user?')" href="action.php?oUserid=<?= $user['oUserid'] ?>">Delete</a>
+                                    </td>
+                                    <td>
+                                        <span class="status_badge <?= ($user['status'] == 1) ? 'status_active' : 'status_inactive'; ?>">
+                                            <?= ($user['status'] == 1) ? 'Active' : 'Inactive'; ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
                     </table>
                 </div>
             </div>
