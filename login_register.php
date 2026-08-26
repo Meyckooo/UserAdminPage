@@ -38,10 +38,14 @@ if(isset($_POST['login'])){
         $_SESSION['username'] = $user['username'];
         $_SESSION['email'] = $user['email'];
 
+        // ADD THESE TWO CRITICAL LINES:
+        $_SESSION['oUserid'] = $user['oUserid']; 
+        $_SESSION['role'] = strtolower($user['role']);
+
         if($user['role'] === 'admin'){
-            header("Location: user_account.php");
+            header("Location: index.php");
         }else{
-            header("Location: user_page.php");
+            header("Location: index.php");
         }
         exit();
         }

@@ -662,12 +662,39 @@
     font-size: 13px;
     }
 
-    /* Active Focus States (Blue Glow Effect) */
     .au_info input:focus, .eu_info input:focus {
     background-color: #ffffff;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(116, 148, 236, 0.2);
     }
+
+    .au_info form select,
+    .eu_info form select{
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    background-color: #fff;
+    color: #333;
+    box-sizing: border-box;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Match focus states sa standard input */
+.au_info form select:focus,
+.eu_info form select:focus{
+    border-color: #007bff;
+}
+
+/* Placeholder option styling */
+.au_info form select option[value=""][disabled],
+.eu_info form select option[value=""][disabled] {
+    color: #888;
+}
 
     /* ----------------------------------
     Button Group (.btn_box)

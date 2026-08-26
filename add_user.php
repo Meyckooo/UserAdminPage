@@ -27,6 +27,12 @@ require_once 'header.php';
                         <input type="email" name="email" placeholder="Email" required>
                         <input type="password" name="password" placeholder="Password" required>
                         <input type="text" name="role" placeholder="Role" required>
+                        <!-- Dropdown para sa Status -->
+                        <select name="status" required>
+                            <option value="" disabled selected>Select Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
                         <div class="btn_box">
                             <button type="submit" name="add">Add User</button>
                             <a href="user_account.php" class="global_btn">Cancel</a>

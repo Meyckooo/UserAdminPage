@@ -10,6 +10,10 @@ if (!isset($_SESSION['username'])) {
 // Database connection
 include "config/config.php";
 
+// 1. INCLUDE ACCESS CHECK & VERIFY PERMISSION FOR THIS PAGE
+require_once 'check_access.php';
+checkAccess(3, 'oMain'); // Module ID 3 corresponds to USER ACCOUNTS in tbl_module
+
 // Fetch user data
 $query = mysqli_query($conn, "SELECT * FROM users");
 
@@ -22,7 +26,7 @@ require_once 'header.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Page</title>
+    <title>User Accounts</title>
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/style.css">
 </head>
 
@@ -53,7 +57,14 @@ require_once 'header.php';
                         <tbody>
                             <?php
                             $no = 1;
-                            while ($user = mysqli_fetch_assoc($query)) : ?>
+                            while ($user = mysqli_fetch_assoc($query)) :
+                                // Generous conditional check para sa tanang variation sa status value
+                                $rawStatus = trim($user['status']);
+                                $isActive = ($rawStatus == '1' || strtolower($rawStatus) === 'active');
+
+                                $statusText = $isActive ? 'ACTIVE' : 'INACTIVE';
+                                $statusClass = $isActive ? 'status_active' : 'status_inactive';
+                            ?>
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= htmlspecialchars($user['name']) ?></td>
@@ -66,8 +77,8 @@ require_once 'header.php';
                                         <a class="delete_btn" onclick="return confirm('Are you sure you want to delete this user?')" href="action.php?oUserid=<?= $user['oUserid'] ?>">Delete</a>
                                     </td>
                                     <td>
-                                        <span class="status_badge <?= ($user['status'] == 1) ? 'status_active' : 'status_inactive'; ?>">
-                                            <?= ($user['status'] == 1) ? 'Active' : 'Inactive'; ?>
+                                        <span class="status_badge <?= $statusClass; ?>">
+                                            <?= $statusText; ?>
                                         </span>
                                     </td>
                                 </tr>
@@ -80,6 +91,24 @@ require_once 'header.php';
     </div>
 
     <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status') === 'updated') {
+                Swal.fire({
+                    title: 'Updated Successfully!',
+                    text: 'User details and status have been updated.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                // I-clean up ang URL parameter pagkahuman
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+    </script>
 
 </body>
 
