@@ -12,7 +12,7 @@ if (!$current_logged_userid) {
 }
 
 // Module ID para sa User Accounts / Permissions
-$permission_module_id = 3; 
+$permission_module_id = 3;
 
 // Fetch current user access rights
 $chk_stmt = $conn->prepare("SELECT oMain, oEdit, oSave FROM tbl_access WHERE oUserid = ? AND oModuleid = ?");
@@ -67,6 +67,7 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,6 +75,7 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="node_modules/sweetalert2/dist/sweetalert2.min.css">
 </head>
+
 <body>
     <?php include $base_path . 'includes/sidebar.php'; ?>
     <div id="main">
@@ -81,7 +83,7 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
             <div class="main_con">
                 <form id="permissionsForm" action="save_permissions.php" method="POST">
                     <input type="hidden" name="target_userid" value="<?= $target_userid; ?>">
-                    
+
                     <div class="permissions_container">
                         <h2 class="permissions_title">PERMISSIONS FOR: <?= strtoupper(htmlspecialchars($target_user['name'])); ?></h2>
                         <div class="permissions_table_wrapper">
@@ -107,46 +109,46 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php 
-                                    if ($modules_result && mysqli_num_rows($modules_result) > 0): 
+                                    <?php
+                                    if ($modules_result && mysqli_num_rows($modules_result) > 0):
                                         $actions = ['oMain', 'oAdd', 'oEdit', 'oView', 'oSave', 'oPost', 'oCancel', 'oPrint', 'oDiscount', 'oSend', 'oSalesassistant', 'oSupervisor', 'oManager', 'oAudit'];
-                                        
-                                        while ($mod = mysqli_fetch_assoc($modules_result)): 
+
+                                        while ($mod = mysqli_fetch_assoc($modules_result)):
                                             $mod_id = $mod['oModuleid'];
                                             $mod_name = $mod['oModulename'];
                                             $user_acc = $access_data[$mod_id] ?? [];
                                             $is_dashboard = ($mod_id == 4);
                                     ?>
-                                        <tr>
-                                            <td class="text-center"><?= $mod_id; ?></td>
-                                            <td class="text-left module_name"><?= htmlspecialchars($mod_name); ?></td>
-                                            <?php foreach ($actions as $action): 
-                                                if ($is_dashboard && $action === 'oMain') {
-                                                    $is_checked = 'checked';
-                                                    $is_disabled = 'disabled';
-                                                } else {
-                                                    $is_checked = isset($user_acc[$action]) && $user_acc[$action] == 1 ? 'checked' : '';
-                                                    $is_disabled = '';
-                                                }
-                                            ?>
-                                                <td class="text-center">
-                                                    <input type="checkbox" 
-                                                           name="permissions[<?= $mod_id; ?>][<?= $action; ?>]" 
-                                                           class="custom_checkbox" 
-                                                           value="1" 
-                                                           <?= $is_checked; ?> 
-                                                           <?= $is_disabled; ?>>
-                                                    
-                                                    <?php if ($is_dashboard && $action === 'oMain'): ?>
-                                                        <input type="hidden" name="permissions[4][oMain]" value="1">
-                                                    <?php endif; ?>
-                                                </td>
-                                            <?php endforeach; ?>
-                                        </tr>
-                                    <?php 
-                                        endwhile; 
-                                    else: 
-                                    ?>
+                                            <tr>
+                                                <td class="text-center"><?= $mod_id; ?></td>
+                                                <td class="text-left module_name"><?= htmlspecialchars($mod_name); ?></td>
+                                                <?php foreach ($actions as $action):
+                                                    if ($is_dashboard && $action === 'oMain') {
+                                                        $is_checked = 'checked';
+                                                        $is_disabled = 'disabled';
+                                                    } else {
+                                                        $is_checked = isset($user_acc[$action]) && $user_acc[$action] == 1 ? 'checked' : '';
+                                                        $is_disabled = '';
+                                                    }
+                                                ?>
+                                                    <td class="text-center">
+                                                        <input type="checkbox"
+                                                            name="permissions[<?= $mod_id; ?>][<?= $action; ?>]"
+                                                            class="custom_checkbox"
+                                                            value="1"
+                                                            <?= $is_checked; ?>
+                                                            <?= $is_disabled; ?>>
+
+                                                        <?php if ($is_dashboard && $action === 'oMain'): ?>
+                                                            <input type="hidden" name="permissions[4][oMain]" value="1">
+                                                        <?php endif; ?>
+                                                    </td>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                        <?php
+                                        endwhile;
+                                    else:
+                                        ?>
                                         <tr>
                                             <td colspan="16" class="text-center">No modules found in the database.</td>
                                         </tr>
@@ -168,93 +170,94 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
     <script src="<?= $base_path; ?>assets/js/sidebar_button.js"></script>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const btnSave = document.getElementById('btnSave');
-        const form = document.getElementById('permissionsForm');
-        const checkboxes = form.querySelectorAll('input[type="checkbox"]:not([disabled])');
-        
-        // Dynamic PHP permission variable
-        const userCanSave = <?= json_encode($can_save_permission); ?>;
+        document.addEventListener("DOMContentLoaded", function() {
+            const btnSave = document.getElementById('btnSave');
+            const form = document.getElementById('permissionsForm');
+            const checkboxes = form.querySelectorAll('input[type="checkbox"]:not([disabled])');
 
-        const initialState = {};
-        checkboxes.forEach((cb, index) => {
-            initialState[index] = cb.checked;
-        });
+            // Dynamic PHP permission variable
+            const userCanSave = <?= json_encode($can_save_permission); ?>;
 
-        btnSave.disabled = true;
-        btnSave.style.opacity = '0.5';
-        btnSave.style.cursor = 'not-allowed';
+            const initialState = {};
+            checkboxes.forEach((cb, index) => {
+                initialState[index] = cb.checked;
+            });
 
-        checkboxes.forEach((cb) => {
-            cb.addEventListener('change', function() {
-                let hasChanged = false;
+            btnSave.disabled = true;
+            btnSave.style.opacity = '0.5';
+            btnSave.style.cursor = 'not-allowed';
 
-                checkboxes.forEach((checkbox, index) => {
-                    if (checkbox.checked !== initialState[index]) {
-                        hasChanged = true;
+            checkboxes.forEach((cb) => {
+                cb.addEventListener('change', function() {
+                    let hasChanged = false;
+
+                    checkboxes.forEach((checkbox, index) => {
+                        if (checkbox.checked !== initialState[index]) {
+                            hasChanged = true;
+                        }
+                    });
+
+                    if (hasChanged) {
+                        btnSave.disabled = false;
+                        btnSave.style.opacity = '1';
+                        btnSave.style.cursor = 'pointer';
+                    } else {
+                        btnSave.disabled = true;
+                        btnSave.style.opacity = '0.5';
+                        btnSave.style.cursor = 'not-allowed';
                     }
                 });
-
-                if (hasChanged) {
-                    btnSave.disabled = false;
-                    btnSave.style.opacity = '1';
-                    btnSave.style.cursor = 'pointer';
-                } else {
-                    btnSave.disabled = true;
-                    btnSave.style.opacity = '0.5';
-                    btnSave.style.cursor = 'not-allowed';
-                }
             });
-        });
 
-        // SweetAlert Confirmation & Permission Check Logic
-        btnSave.addEventListener('click', function(e) {
-            e.preventDefault();
+            // SweetAlert Confirmation & Permission Check Logic
+            btnSave.addEventListener('click', function(e) {
+                e.preventDefault();
 
-            if (btnSave.disabled) return;
+                if (btnSave.disabled) return;
 
-            Swal.fire({
-                title: 'Save Changes?',
-                text: "Are you sure you want to update permissions for <?= htmlspecialchars($target_user['name']); ?>?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, save it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Susiha kon naay save access:
-                    if (!userCanSave) {
-                        // Pakita og Access Denied SweetAlert kon walay permiso
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Access Denied!',
-                            text: "You don't have permission to save or update these details.",
-                            confirmButtonColor: '#d33'
-                        });
-                    } else {
-                        // Kon permitted, i-submit ang form
-                        form.submit();
+                Swal.fire({
+                    title: 'Save Changes?',
+                    text: "Are you sure you want to update permissions for <?= htmlspecialchars($target_user['name']); ?>?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, save it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Susiha kon naay save access:
+                        if (!userCanSave) {
+                            // Pakita og Access Denied SweetAlert kon walay permiso
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Access Denied!',
+                                text: "You don't have permission to save or update these details.",
+                                confirmButtonColor: '#d33'
+                            });
+                        } else {
+                            // Kon permitted, i-submit ang form
+                            form.submit();
+                        }
                     }
-                }
+                });
             });
+
+            // Success Alert Handler
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status') === 'saved') {
+                Swal.fire({
+                    title: 'Saved Successfully!',
+                    text: 'Permissions for <?= htmlspecialchars($target_user['name']); ?> have been updated.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                window.history.replaceState({}, document.title, window.location.pathname + "?oUserid=<?= $target_userid; ?>");
+            }
         });
-
-        // Success Alert Handler
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('status') === 'saved') {
-            Swal.fire({
-                title: 'Saved Successfully!',
-                text: 'Permissions for <?= htmlspecialchars($target_user['name']); ?> have been updated.',
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false
-            });
-
-            window.history.replaceState({}, document.title, window.location.pathname + "?oUserid=<?= $target_userid; ?>");
-        }
-    });
     </script>
 </body>
+
 </html>

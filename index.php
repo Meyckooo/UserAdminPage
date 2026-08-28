@@ -42,6 +42,7 @@ $base_path = './';
 
     <script src="<?php echo $base_path; ?>/assets/js/modal_item.js"></script>
     <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 

@@ -2,6 +2,7 @@
 session_start();
 $base_path = './';
 require_once 'header.php';
+require_once 'config/config.php'
 ?>
 
 <!DOCTYPE html>
@@ -29,9 +30,7 @@ require_once 'header.php';
                         <input type="text" name="role" placeholder="Role" required>
                         <!-- Dropdown para sa Status -->
                         <select name="status" required>
-                            <option value="" disabled selected>Select Status</option>
                             <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
                         </select>
                         <div class="btn_box">
                             <button type="submit" name="add">Add User</button>

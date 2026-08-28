@@ -1,11 +1,15 @@
 <?php
 session_start();
+require 'config/config.php';
 
 $errors = [
     'login' => $_SESSION['login_error'] ?? '',
     'register'=> $_SESSION['register_error'] ?? ''
 ];
 $activeForm = $_SESSION['active_form'] ?? 'login';
+
+// Catch status error message for SweetAlert
+$inactiveError = $_SESSION['inactive_error'] ?? '';
 
 session_unset();
 
@@ -16,7 +20,6 @@ function showError(string $error): string {
 function isActiveForm(string $formName, string $activeForm): string {
     return $formName === $activeForm ? 'active' : '';
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +29,7 @@ function isActiveForm(string $formName, string $activeForm): string {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body>
@@ -35,7 +39,7 @@ function isActiveForm(string $formName, string $activeForm): string {
             <div class="form_box <?= isActiveForm('login', $activeForm); ?>" id="login-form">
                 <h2>Login</h2>
                 <?= showError($errors['login']); ?>
-                <form action="login_register.php" method="post">
+                <form action="action.php" method="post">
                     <input type="text" name="username" placeholder="Username" required>
                     <div class="login_input_field">
                         <input id="password" type="password" name="password" placeholder="Password" required>
@@ -49,19 +53,23 @@ function isActiveForm(string $formName, string $activeForm): string {
             <div class="form_box <?= isActiveForm('register', $activeForm); ?>" id="register-form">
                 <h2>Register</h2>
                 <?= showError($errors['register']); ?>
-                <form action="login_register.php" method="post">
+                <form action="action.php" method="post">
                     <input type="text" name="name" placeholder="Name" required>
                     <input type="text" name="username" placeholder="Username" required>
                     <input type="email" name="email" placeholder="Email" required>
                     <div class="login_input_field">
-                        <input id="password" type="password" name="password" placeholder="Password" required>
-                        <i><img src="assets/images/eyeclose.png" id="eyeicon"></i>
+                        <input id="password_reg" type="password" name="password" placeholder="Password" required>
+                        <i><img src="assets/images/eyeclose.png" id="eyeicon_reg"></i>
                     </div>
                     <select name="role" required>
                         <option value="">--Select Role--</option>
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
                     </select>
+                    <?php
+                        
+                    ?>
+                    <input type="text" name="active" value="Active" style="pointer-events:none;">
                     <button type="submit" name="register">Register</button>
                     <p>Already have an account? <a href="#" onclick="showForm('login-form')">Login</a></p>
                 </form>
@@ -69,10 +77,21 @@ function isActiveForm(string $formName, string $activeForm): string {
         </div>
     </div>
 
-
     <script src="assets/js/script.js"></script>
-
-    <!-- https://www.youtube.com/watch?v=LiomRvK7AM8 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const inactiveMsg = <?= json_encode($inactiveError); ?>;
+        
+        if (inactiveMsg) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Account Disabled',
+                text: inactiveMsg,
+                confirmButtonColor: '#d33'
+            });
+        }
+    });
+    </script>
 </body>
-
 </html>

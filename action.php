@@ -4,7 +4,86 @@
 session_start();
 require 'config/config.php';
 
+// ----------------------------------------------------
+// REGISTRATION PROCESS
+// ----------------------------------------------------
+if (isset($_POST['register'])){
+    $name = $_POST['name'];
+    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $role = $_POST['role'];
+    // Default Status value for newly registered users
+    $status = $_POST['active'] = 1; 
+
+    $checkuserName = $conn->query("SELECT username FROM users WHERE username = '$username' OR email = '$email'");
+    if ($checkuserName->num_rows > 0){
+        $_SESSION['register_error'] = 'You are already registered!';
+        $_SESSION['active_form'] = 'register';
+    } else {
+        // 
+        $register_stmt = $conn->prepare("INSERT INTO users (name, username, email, password, role, status) VALUES (?, ?, ?, ?, ?, ?)");
+        $register_stmt->bind_param("sssssi", $name, $username, $email, $password, $role, $status);
+        
+        if ($register_stmt->execute()) {
+        $new_userid = $register_stmt->insert_id; // Get generated oUserid
+
+        // 2. Default Access: Give Store Dashboard (Module 4) oMain = 1 Access
+        $access_register_stmt = $conn->prepare("INSERT INTO tbl_access (oUserid, oModuleid, oMain) VALUES (?, 4, 1)");
+        $access_register_stmt->bind_param("i", $new_userid);
+        $access_register_stmt->execute();
+        }
+    }
+
+    header("Location: login.php");
+    exit();
+}
+
+// ----------------------------------------------------
+// LOGIN PROCESS
+// ----------------------------------------------------
+if(isset($_POST['login'])){
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $result = $conn->query("SELECT * FROM users WHERE username = '$username'");
+    
+    if ($result->num_rows > 0){
+        $user = $result->fetch_assoc();
+        
+        if (password_verify($password, $user['password'])){
+            
+            // STATUS CHECK: Susiha kon Active ba ang account
+            $rawStatus = trim($user['status']);
+            $isActive = ($rawStatus == '1' || strtolower($rawStatus) === 'active');
+
+            if (!$isActive) {
+                $_SESSION['inactive_error'] = "Your account is currently inactive/disabled. Please contact the administrator.";
+                $_SESSION['active_form'] = 'login';
+                header("Location: login.php");
+                exit();
+            }
+
+            // Kon Active, i-set ang login sessions
+            $_SESSION['name']     = $user['name'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['email']    = $user['email'];
+            $_SESSION['oUserid']  = $user['oUserid']; 
+            $_SESSION['role']     = strtolower($user['role']);
+
+            header("Location: index.php");
+            exit();
+        }
+    }
+
+    $_SESSION['login_error'] = 'Incorrect Username or password';
+    $_SESSION['active_form'] = 'login';
+    header("Location: login.php");
+    exit();
+}
+
 // ADD USERS FROM DATABASE
+
 // Sample snippet sa action.php for adding user
 if (isset($_POST['add'])) {
     $name = $_POST['name'];
@@ -12,19 +91,19 @@ if (isset($_POST['add'])) {
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
-    $status = $_POST['status'];
+    $status = $_POST['status'] = 1;
 
     // 1. Insert New User
-    $stmt = $conn->prepare("INSERT INTO users (name, username, email, password, role, status) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssi", $name, $username, $email, $password, $role, $status);
+    $add_stmt = $conn->prepare("INSERT INTO users (name, username, email, password, role, status) VALUES (?, ?, ?, ?, ?, ?)");
+    $add_stmt->bind_param("sssssi", $name, $username, $email, $password, $role, $status);
 
-    if ($stmt->execute()) {
-        $new_userid = $stmt->insert_id; // Get generated oUserid
+    if ($add_stmt->execute()) {
+        $new_userid = $add_stmt->insert_id; // Get generated oUserid
 
         // 2. Default Access: Give Store Dashboard (Module 4) oMain = 1 Access
-        $access_stmt = $conn->prepare("INSERT INTO tbl_access (oUserid, oModuleid, oMain) VALUES (?, 4, 1)");
-        $access_stmt->bind_param("i", $new_userid);
-        $access_stmt->execute();
+        $access_add_stmt = $conn->prepare("INSERT INTO tbl_access (oUserid, oModuleid, oMain) VALUES (?, 4, 1)");
+        $access_add_stmt->bind_param("i", $new_userid);
+        $access_add_stmt->execute();
 
         header("Location: user_account.php?status=added");
         exit();

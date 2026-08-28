@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 /**
  * Checks if user has permission. If NOT, stops execution and shows SweetAlert.
  */
-function checkAccess($module_id, $action = 'oMain') {
+function checkAccess(String $module_id, $action = 'oMain') {
     global $conn;
 
     if (!isset($_SESSION['oUserid'])) {
@@ -43,7 +43,7 @@ function checkAccess($module_id, $action = 'oMain') {
 /**
  * Helper function for Sidebar / UI condition checks (returns true or false)
  */
-function hasPermission($module_id, $action = 'oMain') {
+function hasPermission(String $module_id, $action = 'oMain') {
     global $conn;
 
     if (!isset($_SESSION['oUserid']) || !$conn) {
@@ -105,7 +105,7 @@ function showAccessDeniedAlert() {
     ';
 }
 
-function checkModuleAccess($module_id, $action = 'oMain') {
+function checkModuleAccess(String $module_id, $action = 'oMain') {
     return checkAccess($module_id, $action);
 }
 ?>
