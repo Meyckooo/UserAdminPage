@@ -133,14 +133,14 @@ if (isset($_POST['update'])) {
     // Kon VARCHAR, dawaton gihapon kini.
     if (!empty($_POST['new_password'])) {
         $password = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("UPDATE users SET name=?, username=?, email=?, password=?, role=?, status=? WHERE oUserid=?");
-        $stmt->bind_param("ssssssi", $name, $username, $email, $password, $role, $status_val, $id);
+        $edit_stmt = $conn->prepare("UPDATE users SET name=?, username=?, email=?, password=?, role=?, status=? WHERE oUserid=?");
+        $edit_stmt->bind_param("ssssssi", $name, $username, $email, $password, $role, $status_val, $id);
     } else {
-        $stmt = $conn->prepare("UPDATE users SET name=?, username=?, email=?, role=?, status=? WHERE oUserid=?");
-        $stmt->bind_param("sssssi", $name, $username, $email, $role, $status_val, $id);
+        $edit_stmt = $conn->prepare("UPDATE users SET name=?, username=?, email=?, role=?, status=? WHERE oUserid=?");
+        $edit_stmt->bind_param("sssssi", $name, $username, $email, $role, $status_val, $id);
     }
 
-    if ($stmt->execute()) {
+    if ($edit_stmt->execute()) {
         header("Location: user_account.php?status=updated");
         exit();
     } else {
