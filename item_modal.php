@@ -1,6 +1,10 @@
 <?php
 session_start();
+require 'config/config.php'; // Apil ang db connection
 $base_path = './';
+
+// Fetch items gikan sa tbl_item
+$items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +37,9 @@ $base_path = './';
             </div>
         </div>
     </header>
+
     <?php include $base_path . 'includes/sidebar.php'; ?>
+
     <div id="main">
         <div class="main_con main_item_con">
             <div class="item_parent">
@@ -54,11 +60,10 @@ $base_path = './';
                             <label for="addedBy">Added By</label>
                             <input type="text" id="addedBy" placeholder="Enter name..." required>
                         </div>
-
-                        <button type="button" class="btn-submit">Save Locator</button>
                     </form>
                 </div>
 
+                <!-- MAIN MAIN OUTSIDE TABLE -->
                 <div class="item_table_details">
                     <table class="styled_item_table">
                         <thead>
@@ -72,61 +77,43 @@ $base_path = './';
                                 <th class="text-center">ACTION</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>ITM-001</td>
-                                <td>1001</td>
-                                <td>PCS</td>
-                                <td>High-Performance Industrial Valve Extra Long Description</td>
-                                <td>Aisle 3, Rack A</td>
-                                <td>Bin 12</td>
-                                <td class="text-center">
-                                    <button class="btn-delete" onclick="deleteRow(this)" title="Delete Row" aria-label="Delete row">&times;</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>ITM-002</td>
-                                <td>1002</td>
-                                <td>BOX</td>
-                                <td>Stainless Steel Mounting Brackets Heavy Duty</td>
-                                <td>Aisle 1, Rack C</td>
-                                <td>Bin 04</td>
-                                <td class="text-center">
-                                    <button class="btn-delete" onclick="deleteRow(this)" title="Delete Row" aria-label="Delete row">&times;</button>
-                                </td>
+                        <tbody id="main_table_body">
+                            <tr class="empty-row">
+                                <td colspan="7" style="text-align: center; color: #888;">No items added yet. Click "Add Item" to select.</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </div>
 
-        <!-- Modal 1: Add Item -->
+        <!-- Modal 1: Add Item (Lookup) -->
         <div id="modal-add-item" class="modal_overlay">
             <div class="lookup_modal_container">
-                <!-- Top Action Header -->
                 <div class="lookup_header">
                     <div class="lookup_title_group">
                         <span class="lookup_title">LOOKUP ITEM</span>
-                        <button class="btn_add_selected">ADD SELECTED</button>
+                        <button type="button" class="btn_add_selected" id="btnAddSelected">ADD SELECTED</button>
                     </div>
                     <button class="modal_close">&times;</button>
                 </div>
 
-                <!-- Search Control Bar -->
                 <div class="lookup_controls">
                     <div class="search_input_wrapper">
-                        <input type="text" class="lookup_search_input" placeholder="Search Item Here">
+                        <!-- GI-GAMITAG ID: lookupSearchInput -->
+                        <input type="text" id="lookupSearchInput" class="lookup_search_input" placeholder="Search Item Here">
                     </div>
                     <div class="search_filter_wrapper">
-                        <select class="lookup_select">
+                        <!-- GI-GAMITAG ID: lookupSelectFilter -->
+                        <select id="lookupSelectFilter" class="lookup_select">
                             <option value="description">ITEM DESCRIPTION</option>
                             <option value="code">ITEM CODE</option>
                             <option value="barcode">BARCODE</option>
                         </select>
-                        <button class="btn_lookup_search">SEARCH</button>
-                        <button class="btn_lookup_scan">
+                        <!-- GI-GAMITAG ID: btnLookupSearch -->
+                        <button id="btnLookupSearch" class="btn_lookup_search">SEARCH</button>
+                        <!-- GI-GAMITAG ID: btnLookupScan -->
+                        <button id="btnLookupScan" class="btn_lookup_scan">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
                                 <line x1="7" y1="12" x2="17" y2="12" />
@@ -136,7 +123,6 @@ $base_path = './';
                     </div>
                 </div>
 
-                <!-- Table Details Section -->
                 <div class="lookup_table_wrapper">
                     <table class="styled_lookup_table">
                         <thead>
@@ -153,57 +139,32 @@ $base_path = './';
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><input type="checkbox" class="row_checkbox"></td>
-                                <td><strong>1301-02</strong></td>
-                                <td>1301-02</td>
-                                <td>GI PIPE EAGLE S-40 (LG) 1-1/2#40MM x6M 150/BNDL (</td>
-                                <td>8091</td>
-                                <td>LENGTH</td>
-                                <td>DEFAULT</td>
-                                <td></td>
-                                <td><strong>0.00</strong></td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row_checkbox"></td>
-                                <td><strong>1301-04</strong></td>
-                                <td>1301-04</td>
-                                <td>GI PIPE EAGLE S-40 (LG) 1-1/4#32MM x6M 180/BNDL (</td>
-                                <td>8093</td>
-                                <td>LENGTH</td>
-                                <td>DEFAULT</td>
-                                <td></td>
-                                <td><strong>28.00</strong></td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row_checkbox"></td>
-                                <td><strong>1301-06</strong></td>
-                                <td>1301-06</td>
-                                <td>GI PIPE EAGLE S-40 (LG) 1#25MM x6M 250/BNDL (R)</td>
-                                <td>8095</td>
-                                <td>LENGTH</td>
-                                <td>DEFAULT</td>
-                                <td></td>
-                                <td><strong>55.00</strong></td>
-                            </tr>
-                            <tr>
-                                <td><input type="checkbox" class="row_checkbox"></td>
-                                <td><strong>1301-08</strong></td>
-                                <td>1301-08</td>
-                                <td>GI PIPE EAGLE S-40 (LG) 1/2#15MM x6M 500/BNDL (R)</td>
-                                <td>8097</td>
-                                <td>LENGTH</td>
-                                <td>DEFAULT</td>
-                                <td></td>
-                                <td><strong>71.00</strong></td>
-                            </tr>
+                            <?php if (mysqli_num_rows($items_query) > 0): ?>
+                                <?php while ($row = mysqli_fetch_assoc($items_query)): ?>
+                                    <tr>
+                                        <td><input type="checkbox" class="row_checkbox"></td>
+                                        <td class="item_code"><strong><?= htmlspecialchars($row['item_code']); ?></strong></td>
+                                        <td class="item_barcode"><?= htmlspecialchars($row['item_barcode']); ?></td>
+                                        <td class="item_desc"><?= htmlspecialchars($row['item_desc']); ?></td>
+                                        <td class="item_no"><?= htmlspecialchars($row['item_no']); ?></td>
+                                        <td class="item_uom"><?= htmlspecialchars($row['item_uom']); ?></td>
+                                        <td class="item_first_loc"><?= htmlspecialchars($row['item_first_loc']); ?></td>
+                                        <td class="item_sec_loc"><?= htmlspecialchars($row['item_sec_loc']); ?></td>
+                                        <td class="item_stock"><strong><?= number_format((float)$row['item_stock'], 2); ?></strong></td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="9" style="text-align: center;">No items found in database.</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Modal 2: Post -->
+        <!-- Modals 2, 3, 4 -->
         <div id="modal-post" class="modal_overlay">
             <div class="modal_content">
                 <div class="modal_header">
@@ -216,7 +177,6 @@ $base_path = './';
             </div>
         </div>
 
-        <!-- Modal 3: View Items -->
         <div id="modal-view-items" class="modal_overlay">
             <div class="modal_content">
                 <div class="modal_header">
@@ -229,7 +189,6 @@ $base_path = './';
             </div>
         </div>
 
-        <!-- Modal 4: Options -->
         <div id="modal-options" class="modal_overlay">
             <div class="modal_content">
                 <div class="modal_header">
@@ -245,7 +204,7 @@ $base_path = './';
 
     <script src="<?php echo $base_path; ?>/assets/js/modal_item.js"></script>
     <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
+    <script src="assets/js/sweetalert.js"></script>
 
 </body>
-
 </html>

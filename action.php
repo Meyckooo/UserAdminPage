@@ -83,7 +83,6 @@ if(isset($_POST['login'])){
 }
 
 // ADD USERS FROM DATABASE
-
 // Sample snippet sa action.php for adding user
 if (isset($_POST['add'])) {
     $name = $_POST['name'];
