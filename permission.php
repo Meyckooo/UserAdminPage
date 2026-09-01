@@ -166,7 +166,7 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/sweetalert.js"></script>
     <script src="<?= $base_path; ?>assets/js/sidebar_button.js"></script>
 
     <script>

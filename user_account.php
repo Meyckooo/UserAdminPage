@@ -1,12 +1,6 @@
 <?php
 $base_path = "./";
 
-session_start();
-if (!isset($_SESSION['username'])) {
-    header("Location: index.php");
-    exit();
-}
-
 // Database connection
 include "config/config.php";
 
@@ -91,7 +85,7 @@ require_once 'header.php';
     </div>
 
     <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/sweetalert.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);

@@ -287,6 +287,73 @@
     color: #000;
     }
 
+
+    /* BANNER AREA INDEX */
+
+    #banner{
+        position: relative;
+        overflow: hidden;
+    }
+    #banner:before{
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url(../images/banner-img.png);
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .bnr_con {
+        position: relative;
+        padding: 40px 0;
+        min-height: 800px;
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        align-items: center;
+        }
+
+        
+    .bnr_info h1 {
+    font: 800 50px/100% var(--font1);
+    }
+    .bnr_info {
+    position: relative;
+    color: #fff;
+    width: 72%;
+    max-width: 575px;
+    }
+    .bnr_info h1 span {
+    display: block;
+    }
+    .bnr_info p {
+    font-size: 16px;
+    font-weight: 500;
+    margin-block: 25px;
+    }
+    .bnr_info a.global_btn {
+    width: 175px;
+    line-height: 50px;
+    color: #fff;
+    border-color: #fff;
+    font-size: 16px;
+    }
+
+    .bnr_image {
+    width: 59%;
+    }
+    .bnr_image figure {
+    width: 100%;
+    height: 100%;
+    }
+    .bnr_image figure img {
+    width: 100%;
+    height: auto;
+    position: relative;
+    }
+        
+    /* END  */
+
     .form_parent{
     display: block;
     min-height: 100vh;
