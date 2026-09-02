@@ -54,11 +54,11 @@ require_once 'check_access.php';
             </li> 
         <?php endif; ?>
 
-        <!-- Module 16: MODAL ITEM -->
+        <!-- Module 16: ITEM MODAL -->
         <?php if (hasPermission(16, 'oMain')): ?>
             <li class="menu-item mb-2">
                 <a href="<?php echo $base_path; ?>/item_modal.php" class="user_acc menu-link d-flex align-items-center justify-content-between">
-                    Modal Item
+                    Item Modal
                 </a>
             </li>
         <?php endif; ?>
