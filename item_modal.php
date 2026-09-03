@@ -30,7 +30,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                 <ul>
                     <li><a class="global_btn" href="index.php">Back</a></li>
                     <li><a class="global_btn" href="#" data-modal="modal-add-item">Add Item</a></li>
-                    <li><a class="global_btn" href="#" data-modal="modal-post">Post</a></li>
+                    <li><a class="global_btn" href="#" id="btn_post">Post</a></li>
                     <li><a class="global_btn" href="#" data-modal="modal-view-items">View Items</a></li>
                     <li><a class="global_btn" href="#" data-modal="modal-options">Options</a></li>
                 </ul>
@@ -69,11 +69,13 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                         <thead>
                             <tr>
                                 <th>ITEM CODE</th>
+                                <th>BAR CODE</th>
                                 <th>ITEM NO</th>
                                 <th>UNIT</th>
                                 <th>ITEM DESCRIPTION</th>
                                 <th>FIRST LOCATOR</th>
                                 <th>SECOND LOCATOR</th>
+                                <th class="hidden">ITEM STOCK</th>
                                 <th class="text-center">ACTION</th>
                             </tr>
                         </thead>
@@ -133,7 +135,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                                 <th>ITEM DESCRIPTION</th>
                                 <th>ITEM NO</th>
                                 <th>UOM</th>
-                                <th>ASA BUTANG</th>
+                                <th>FIRST LOC</th>
                                 <th>SECOND LOC</th>
                                 <th>STOCK ONHAND</th>
                             </tr>
@@ -164,18 +166,6 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
             </div>
         </div>
 
-        <!-- Modals 2, 3, 4 -->
-        <div id="modal-post" class="modal_overlay">
-            <div class="modal_content">
-                <div class="modal_header">
-                    <h3>Post Action</h3>
-                    <button class="modal_close">&times;</button>
-                </div>
-                <div class="modal_body">
-                    <p>Are you sure you want to post these items?</p>
-                </div>
-            </div>
-        </div>
 
         <div id="modal-view-items" class="modal_overlay">
             <div class="modal_content">
@@ -207,4 +197,5 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
     <script src="assets/js/sweetalert.js"></script>
 
 </body>
+
 </html>

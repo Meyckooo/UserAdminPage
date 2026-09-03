@@ -19,6 +19,7 @@ if (!$user) {
 }
 
 $currentStatus = (strtolower($user['status']) === 'active' || $user['status'] == 1) ? 'Active' : 'Inactive';
+$formatted_post_code = !empty($user['post_code']) ? sprintf("%04d", $user['post_code']) : sprintf("%04d", rand(0, 9999));
 ?>
 
 <!DOCTYPE html>
@@ -45,8 +46,13 @@ $currentStatus = (strtolower($user['status']) === 'active' || $user['status'] ==
                         <input type="text" name="username" placeholder="Username" value="<?= htmlspecialchars($user['username']); ?>" required>
                         <input type="email" name="email" placeholder="Email" value="<?= htmlspecialchars($user['email']); ?>" required>
                         <input type="password" name="new_password" placeholder="New Password (leave blank if unchanged)">
-                        <input type="text" name="role" placeholder="Role" value="<?= htmlspecialchars($user['role']); ?>" required>
+                        <input type="text" name="role" placeholder="Role" style="text-transform: capitalize;" value="<?= htmlspecialchars($user['role']); ?>" required>
                         
+                        <div class="postcode-input-group">
+                            <input type="text" id="post_code" name="post_code" placeholder="Post Code" value="<?= htmlspecialchars($formatted_post_code); ?>" maxlength="4" pattern="\d{4}" title="Post code must be exactly 4 digits" required>
+                            <button type="button" class="btn-generate" onclick="generateRandomPostCode()">Generate Code</button>
+                        </div>
+
                         <select name="status" required>
                             <option value="Active" <?= ($currentStatus === 'Active') ? 'selected' : ''; ?>>Active</option>
                             <option value="Inactive" <?= ($currentStatus === 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
@@ -62,22 +68,29 @@ $currentStatus = (strtolower($user['status']) === 'active' || $user['status'] ==
         </div>
     </div>
 
-    <script src="assets/js/sweetalert.js"></script>
+    <script src="node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
     <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
 
     <script>
+    const userId = <?= $id ?>;
+
+    function generateRandomPostCode() {
+        const randomCode = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+        const postInput = document.getElementById('post_code');
+        postInput.value = randomCode;
+        postInput.dispatchEvent(new Event('input'));
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         const form = document.getElementById('editUserForm');
         const btnUpdate = document.getElementById('btnUpdate');
         const inputs = form.querySelectorAll('input:not([type="hidden"]), select');
 
-        // Targetin ug tipigan ang orihinal nga mga value sa fields
         const initialValues = {};
         inputs.forEach((input) => {
             initialValues[input.name] = input.value;
         });
 
-        // Function para i-check kon naa ba'y nausab
         function checkChanges() {
             let hasChanged = false;
 
@@ -98,31 +111,53 @@ $currentStatus = (strtolower($user['status']) === 'active' || $user['status'] ==
             }
         }
 
-        // Maminaw sa pag-type o pagbalhin og option
         inputs.forEach((input) => {
             input.addEventListener('input', checkChanges);
             input.addEventListener('change', checkChanges);
         });
 
-        // SweetAlert prompt kon i-click ang Update button
         form.addEventListener('submit', function (e) {
             e.preventDefault();
 
             if (btnUpdate.disabled) return;
 
-            Swal.fire({
-                title: 'Update User Details?',
-                text: "Are you sure you want to save these changes?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
+            const postCode = document.getElementById('post_code').value;
+
+            // AJAX validation para sa Post Code duplicate
+            fetch('check_postcode.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'post_code=' + encodeURIComponent(postCode) + '&user_id=' + userId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'exists') {
+                    Swal.fire({
+                        title: 'Post Code Already Exists!',
+                        text: 'The post code "' + postCode + '" is assigned to another user. Please generate or enter another code.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    // Kon walang duplicate, mangutana og confirmation
+                    Swal.fire({
+                        title: 'Update User Details?',
+                        text: "Are you sure you want to save these changes?",
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
         });
     });
