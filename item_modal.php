@@ -1,9 +1,8 @@
 <?php
 session_start();
-require 'config/config.php'; // Apil ang db connection
+require 'config/config.php';
 $base_path = './';
 
-// Fetch items gikan sa tbl_item
 $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
 ?>
 
@@ -14,8 +13,11 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modal Item</title>
-    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/style.css">
-    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/media.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>./assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>./assets/css/media.css">
+    <!-- Flatpickr CSS & Theme -->
+    <link rel="stylesheet" href="<?php echo $base_path; ?>./assets/css/flatpickr.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>./assets/css/material_blue.css">
 </head>
 
 <body>
@@ -31,7 +33,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                     <li><a class="global_btn" href="index.php">Back</a></li>
                     <li><a class="global_btn" href="#" data-modal="modal-add-item">Add Item</a></li>
                     <li><a class="global_btn" href="#" id="btn_post">Post</a></li>
-                    <li><a class="global_btn" href="#" data-modal="modal-view-items">View Items</a></li>
+                    <li><a class="global_btn" href="#" data-modal="modal-view-items" id="btnOpenPosted">Items Posted</a></li>
                     <li><a class="global_btn" href="#" data-modal="modal-options">Options</a></li>
                 </ul>
             </div>
@@ -63,7 +65,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                     </form>
                 </div>
 
-                <!-- MAIN MAIN OUTSIDE TABLE -->
+                <!-- MAIN OUTSIDE TABLE -->
                 <div class="item_table_details">
                     <table class="styled_item_table">
                         <thead>
@@ -81,7 +83,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                         </thead>
                         <tbody id="main_table_body">
                             <tr class="empty-row">
-                                <td colspan="7" style="text-align: center; color: #888;">No items added yet. Click "Add Item" to select.</td>
+                                <td colspan="9" style="text-align: center; color: #888;">No items added yet. Click "Add Item" to select.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -102,26 +104,16 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
 
                 <div class="lookup_controls">
                     <div class="search_input_wrapper">
-                        <!-- GI-GAMITAG ID: lookupSearchInput -->
                         <input type="text" id="lookupSearchInput" class="lookup_search_input" placeholder="Search Item Here">
                     </div>
                     <div class="search_filter_wrapper">
-                        <!-- GI-GAMITAG ID: lookupSelectFilter -->
                         <select id="lookupSelectFilter" class="lookup_select">
                             <option value="description">ITEM DESCRIPTION</option>
                             <option value="code">ITEM CODE</option>
                             <option value="barcode">BARCODE</option>
                         </select>
-                        <!-- GI-GAMITAG ID: btnLookupSearch -->
                         <button id="btnLookupSearch" class="btn_lookup_search">SEARCH</button>
-                        <!-- GI-GAMITAG ID: btnLookupScan -->
-                        <button id="btnLookupScan" class="btn_lookup_scan">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
-                                <line x1="7" y1="12" x2="17" y2="12" />
-                            </svg>
-                            SCAN
-                        </button>
+                        <button id="btnLookupScan" class="btn_lookup_scan">SCAN</button>
                     </div>
                 </div>
 
@@ -166,15 +158,44 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
             </div>
         </div>
 
-
+        <!-- Modal 2: Items Posted Modal -->
         <div id="modal-view-items" class="modal_overlay">
-            <div class="modal_content">
+            <div class="item_modal_content">
                 <div class="modal_header">
-                    <h3>View Items</h3>
+                    <h3>Items Posted</h3>
                     <button class="modal_close">&times;</button>
                 </div>
                 <div class="modal_body">
-                    <p>Overview list or details for items.</p>
+                    <!-- Simplified Date Range Picker Filter -->
+                    <div class="filter-date-group">
+                        <label for="posted_date_range">Filter Date Range:</label>
+                        <div class="date-input-wrapper">
+                            <input type="text" id="posted_date_range" placeholder="Select Date Range" readonly>
+                            <button type="button" id="btn_clear_date" class="btn-clear-date" title="Clear Date">&times;</button>
+                        </div>
+                    </div>
+
+                    <div class="posted-table-wrapper">
+                        <table class="styled_item_table">
+                            <thead>
+                                <tr>
+                                    <th>ITEM CODE</th>
+                                    <th>BARCODE</th>
+                                    <th>ITEM NO</th>
+                                    <th>DESCRIPTION</th>
+                                    <th>ITEM UOM</th>
+                                    <th>FIRST LOC</th>
+                                    <th>SECOND LOC</th>
+                                    <th>DATE POSTED</th>
+                                </tr>
+                            </thead>
+                            <tbody id="posted_table_body">
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">Loading posted items...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -192,8 +213,9 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
         </div>
     </div>
 
-    <script src="<?php echo $base_path; ?>/assets/js/modal_item.js"></script>
     <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
+    <script src="<?php echo $base_path; ?>./assets/js/flatpickr.js"></script>
+    <script src="<?php echo $base_path; ?>./assets/js/modal_item.js"></script>
     <script src="assets/js/sweetalert.js"></script>
 
 </body>

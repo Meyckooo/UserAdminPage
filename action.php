@@ -5,7 +5,6 @@ require 'config/config.php';
 // Helper function para mag-format o mag-generate ug random unique 4-digit code
 function getValidPostCode($code, $conn) {
     if (!empty($code)) {
-        // Kuhaon ang intval aron dili mag-convert ngadto sa pure integer ang string
         return sprintf("%04d", $code); 
     }
     
@@ -28,7 +27,6 @@ if (isset($_POST['register'])){
     $role = $_POST['role'];
     $status = 1; 
 
-    // Random 4-digit post_code
     $post_code = getValidPostCode($_POST['post_code'] ?? null, $conn);
 
     $checkuserName = $conn->query("SELECT username FROM users WHERE username = '$username' OR email = '$email'");
@@ -114,14 +112,12 @@ if (isset($_POST['add']) || (isset($_POST['is_ajax']) && !isset($_POST['update']
         $access_add_stmt->bind_param("i", $new_userid);
         $access_add_stmt->execute();
 
-        // Kon gi-call via AJAX, mo-return og JSON response para sa SweetAlert
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' || isset($_POST['is_ajax'])) {
             header('Content-Type: application/json');
             echo json_encode(['status' => 'success', 'message' => 'User created successfully!']);
             exit();
         }
 
-        // Standard PHP redirect fallback
         header("Location: user_account.php?status=added");
         exit();
     } else {
@@ -181,14 +177,12 @@ if(isset($_GET['oUserid'])){
     exit;
 }
 
-
 // ----------------------------------------------------
-// POST ITEMS TO DATABASE (tbl_item_details)
+// POST ITEMS TO DATABASE (tbl_item_details) - FIXED
 // ----------------------------------------------------
 if (isset($_POST['post_items'])) {
     header('Content-Type: application/json');
 
-    // Kuhaon ang gi-pasa nga items array (gikan sa AJAX/JS)
     $items_json = $_POST['items'] ?? '[]';
     $items = json_decode($items_json, true);
 
@@ -197,10 +191,9 @@ if (isset($_POST['post_items'])) {
         exit();
     }
 
-    // Gamit tag prepared statement para safe sa SQL Injection
-    $stmt = $conn->prepare("INSERT INTO tbl_item_details (item_code, item_barcode, item_no, item_uom, item_desc, item_first_loc, item_sec_loc, item_stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $post_stmt = $conn->prepare("INSERT INTO tbl_item_details (item_code, item_barcode, item_no, item_uom, item_desc, item_first_loc, item_sec_loc, item_stock, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
 
-    if (!$stmt) {
+    if (!$post_stmt) {
         echo json_encode(['status' => 'error', 'message' => 'Database prepare failed: ' . $conn->error]);
         exit();
     }
@@ -208,29 +201,92 @@ if (isset($_POST['post_items'])) {
     $inserted_count = 0;
 
     foreach ($items as $item) {
-        $itemCode = $item['itemCode'] ?? '';
-        $barCode  = $item['barCode'] ?? '';
-        $itemNo   = $item['itemNo'] ?? '';
-        $itemUom  = $item['uom'] ?? '';
-        $desc     = $item['desc'] ?? '';
-        $firstLoc = $item['firstLoc'] ?? '';
-        $secLoc   = $item['secLoc'] ?? '';
-        $itemStock   = $item['itemStock'] ?? '';
+        $itemCode  = $item['itemCode'] ?? '';
+        $barCode   = $item['barCode'] ?? '';
+        $itemNo    = $item['itemNo'] ?? '';
+        $itemUom   = $item['uom'] ?? '';
+        $desc      = $item['desc'] ?? '';
+        $itemStock = intval($item['itemStock'] ?? 0);
 
-        $stmt->bind_param("ssissssi", $itemCode, $barCode, $itemNo, $itemUom, $desc, $firstLoc, $secLoc, $itemStock);
-        if ($stmt->execute()) {
+        // Direkta nga gikuha ang 1 o 0 gikan sa JavaScript
+        $firstLocInt = intval($item['firstLocChecked'] ?? 0);
+        $secLocInt   = intval($item['secLocChecked'] ?? 0);
+
+        // 5 strings ("sssss") + 3 integers ("iii")
+        $post_stmt->bind_param("sssssiii", $itemCode, $barCode, $itemNo, $itemUom, $desc, $firstLocInt, $secLocInt, $itemStock);
+        
+        if ($post_stmt->execute()) {
             $inserted_count++;
         }
     }
 
-    $stmt->close();
+    $post_stmt->close();
 
     if ($inserted_count > 0) {
-        echo json_encode(['status' => 'success', 'message' => "$inserted_count item(s) successfully posted to database!"]);
+        echo json_encode(['status' => 'success', 'message' => "$inserted_count item(s) successfully posted!"]);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Failed to post items.']);
     }
     exit();
 }
+
+// ----------------------------------------------------
+// FETCH POSTED ITEMS (FIXED FOR CURRENT DAY DEFAULT)
+// ----------------------------------------------------
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // I-set sa 0 aron dili mo-print og HTML errors
+
+if (isset($_POST['get_posted_items'])) {
+    header('Content-Type: application/json');
+
+    $response = [
+        'status' => 'error',
+        'items' => [],
+        'message' => ''
+    ];
+
+    // DEFAULT: Filter sa Current Day / Karon nga adlaw lang
+    $where_clause = " WHERE DATE(created_at) = CURDATE()";
+
+    // Kon may napili nga custom date/range sa filter input
+    if (!empty($_POST['date_range'])) {
+        $dates = explode(' to ', $_POST['date_range']);
+        if (count($dates) == 2) {
+            $start_date = mysqli_real_escape_string($conn, trim($dates[0]) . ' 00:00:00');
+            $end_date   = mysqli_real_escape_string($conn, trim($dates[1]) . ' 23:59:59');
+            $where_clause = " WHERE created_at BETWEEN '$start_date' AND '$end_date'";
+        } else if (count($dates) == 1) {
+            $single_date = mysqli_real_escape_string($conn, trim($dates[0]));
+            $where_clause = " WHERE DATE(created_at) = '$single_date'";
+        }
+    }
+
+    $query = "SELECT * FROM tbl_item_details $where_clause ORDER BY created_at DESC";
+    $result = mysqli_query($conn, $query);
+
+    if ($result) {
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'item_code'      => $row['item_code'] ?? '',
+                'item_barcode'   => $row['item_barcode'] ?? '',
+                'item_no'        => $row['item_no'] ?? '',
+                'item_uom'       => $row['item_uom'] ?? '',
+                'item_desc'      => $row['item_desc'] ?? '',
+                'item_first_loc' => $row['item_first_loc'] ?? '',
+                'item_sec_loc'   => $row['item_sec_loc'] ?? '',
+                'created_at'     => $row['created_at'] ?? ''
+            ];
+        }
+        $response['status'] = 'success';
+        $response['items']  = $items;
+    } else {
+        $response['message'] = mysqli_error($conn);
+    }
+
+    echo json_encode($response);
+    exit();
+}
+
 
 ?>
