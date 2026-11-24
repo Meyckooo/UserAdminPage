@@ -1,111 +1,40 @@
 <?php
-// check_access.php
+// Nag-provide og global helper wrappers nga naka-delegate sa AccessController para sa backward compatibility
+require_once __DIR__ . '/controller/AccessController.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-/**
- * Checks if user has permission. If NOT, stops execution and shows SweetAlert.
- */
-function checkAccess(String $module_id, $action = 'oMain') {
+function getAccessController(): AccessController
+{
     global $conn;
+    static $controller = null;
 
-    if (!isset($_SESSION['oUserid'])) {
-        header("Location: login.php");
-        exit();
+    if ($controller === null) {
+        $controller = new AccessController($conn);
     }
 
-    $userid = intval($_SESSION['oUserid']);
-
-    $sql = "SELECT $action FROM tbl_access WHERE oUserid = ? AND oModuleid = ? LIMIT 1";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $userid, $module_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    $has_access = false;
-
-    if ($row = $result->fetch_assoc()) {
-        if (intval($row[$action]) === 1) {
-            $has_access = true;
-        }
-    }
-
-    if (!$has_access) {
-        showAccessDeniedAlert();
-        exit();
-    }
-
-    return true;
+    return $controller;
 }
 
-/**
- * Helper function for Sidebar / UI condition checks (returns true or false)
- */
-function hasPermission(String $module_id, $action = 'oMain') {
-    global $conn;
-
-    if (!isset($_SESSION['oUserid']) || !$conn) {
-        return false;
-    }
-
-    $userid = intval($_SESSION['oUserid']);
-
-    $sql = "SELECT $action FROM tbl_access WHERE oUserid = ? AND oModuleid = ? LIMIT 1";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $userid, $module_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($row = $result->fetch_assoc()) {
-        return intval($row[$action]) === 1;
-    }
-
-    return false;
+function hasElevatedModuleAccess($module_id): bool
+{
+    return getAccessController()->hasElevatedModuleAccess(intval($module_id), $_SESSION ?? []);
 }
 
-// Professional English SweetAlert
-function showAccessDeniedAlert() {
-    echo '
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Access Denied</title>
-        <script src="assets/js/sweetalert.js"></script>
-        <style>
-            body {
-                background-color: #f4f6f9;
-                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            }
-        </style>
-    </head>
-    <body>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Swal.fire({
-                    icon: "error",
-                    title: "Access Denied",
-                    text: "You do not have permission to access this module.",
-                    confirmButtonText: "Back",
-                    confirmButtonColor: "#dc3545",
-                    allowOutsideClick: false,
-                    allowEscapeKey: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.history.back();
-                    }
-                });
-            });
-        </script>
-    </body>
-    </html>
-    ';
+function hasPermission($module_id, $column): bool
+{
+    return getAccessController()->hasPermission(intval($module_id), (string) $column, $_SESSION ?? []);
 }
 
-function checkModuleAccess(String $module_id, $action = 'oMain') {
-    return checkAccess($module_id, $action);
+function showAccessDeniedAlert($message = "You don't have permission to access this module.", $redirectUrl = 'index.php'): void
+{
+    getAccessController()->showAccessDeniedAlert((string) $message, (string) $redirectUrl);
 }
-?>
+
+function checkAccess($module_id, $column, $custom_message = ''): bool
+{
+    return getAccessController()->checkAccess(intval($module_id), (string) $column, $_SESSION ?? [], (string) $custom_message);
+}
+
+function renderModulePermissionScript($module_id): void
+{
+    getAccessController()->renderModulePermissionScript(intval($module_id), $_SESSION ?? []);
+}

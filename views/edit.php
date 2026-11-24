@@ -1,8 +1,15 @@
 <?php
 session_start();
-$base_path = './';
-require_once 'header.php';
-include "config/config.php";
+
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$base_path = '..';
+
+require_once __DIR__ . '/header.php';
+require_once __DIR__ . '/../config/config.php';
 
 if (!isset($_GET['oUserid']) || empty($_GET['oUserid'])) {
     header("Location: user_account.php");
@@ -29,18 +36,18 @@ $formatted_post_code = !empty($user['post_code']) ? sprintf("%04d", $user['post_
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit User</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="node_modules/sweetalert2/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>/node_modules/sweetalert2/dist/sweetalert2.min.css">
 </head>
 
 <body>
-    <?php include $base_path . 'includes/sidebar.php'; ?>
+    <?php include $base_path . '/includes/sidebar.php'; ?>
     <div id="main">
         <div class="wrapper">
             <div class="main_con">
                 <div class="eu_info">
                     <h1>Edit User</h1>
-                    <form id="editUserForm" action="action.php?id=<?= $id ?>" method="POST">
+                    <form id="editUserForm" action="<?php echo $base_path; ?>/user_action.php?id=<?= $id ?>" method="POST">
                         <input type="hidden" name="update" value="1">
                         <input type="text" name="name" placeholder="Name" value="<?= htmlspecialchars($user['name']); ?>" required>
                         <input type="text" name="username" placeholder="Username" value="<?= htmlspecialchars($user['username']); ?>" required>
@@ -68,8 +75,8 @@ $formatted_post_code = !empty($user['post_code']) ? sprintf("%04d", $user['post_
         </div>
     </div>
 
-    <script src="node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
-    <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
+    <script src="<?php echo $base_path; ?>/node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
+    <script src="<?php echo $base_path; ?>/assets/js/sidebar_button.js"></script>
 
     <script>
     const userId = <?= $id ?>;
@@ -124,7 +131,7 @@ $formatted_post_code = !empty($user['post_code']) ? sprintf("%04d", $user['post_
             const postCode = document.getElementById('post_code').value;
 
             // AJAX validation para sa Post Code duplicate
-            fetch('check_postcode.php', {
+            fetch('<?php echo $base_path; ?>/check_postcode.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: 'post_code=' + encodeURIComponent(postCode) + '&user_id=' + userId

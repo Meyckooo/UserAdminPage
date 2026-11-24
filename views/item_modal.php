@@ -1,8 +1,17 @@
 <?php
 session_start();
-require 'config/config.php';
-$base_path = './';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../check_access.php';
 
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$base_path = '..';
+
+$locator_module_id = 16; // o ang oModuleid sa imong page sa tbl_module
+renderModulePermissionScript($locator_module_id);
 $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
 ?>
 
@@ -13,11 +22,11 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modal Item</title>
-    <link rel="stylesheet" href="<?php echo $base_path; ?>./assets/css/style.css">
-    <link rel="stylesheet" href="<?php echo $base_path; ?>./assets/css/media.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/media.css">
     <!-- Flatpickr CSS & Theme -->
-    <link rel="stylesheet" href="<?php echo $base_path; ?>./assets/css/flatpickr.css">
-    <link rel="stylesheet" href="<?php echo $base_path; ?>./assets/css/material_blue.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/flatpickr.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/material_blue.css">
 </head>
 
 <body>
@@ -25,7 +34,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
         <div class="item_header">
             <div class="item_details_left">
                 <div class="item_code">
-                    <span>5C30A6</span>
+                    <span id="headerLocatorCode">5C30A6</span>
                 </div>
             </div>
             <div class="item_right_btns">
@@ -40,7 +49,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
         </div>
     </header>
 
-    <?php include $base_path . 'includes/sidebar.php'; ?>
+    <?php include $base_path . '/includes/sidebar.php'; ?>
 
     <div id="main">
         <div class="main_con main_item_con">
@@ -54,13 +63,18 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                         </div>
 
                         <div class="locator-form-group">
-                            <label for="locatorAdded">Locator Added</label>
-                            <input type="date" id="locatorAdded" required>
+                            <label for="locatorAdded">Locator Added (Date &amp; Time)</label>
+                            <input type="datetime-local" id="locatorAdded" value="<?= date('Y-m-d\TH:i'); ?>" disabled>
                         </div>
 
                         <div class="locator-form-group">
                             <label for="addedBy">Added By</label>
-                            <input type="text" id="addedBy" placeholder="Enter name..." required>
+                            <input type="text" id="addedBy" value="<?= htmlspecialchars($_SESSION['name'] ?? $_SESSION['username'] ?? ''); ?>" placeholder="Enter name..." readonly required>
+                        </div>
+
+                        <div class="locator-form-group">
+                            <label for="locatorRemarks">Remarks (Optional)</label>
+                            <input type="text" id="locatorRemarks" placeholder="Add notes or remarks...">
                         </div>
                     </form>
                 </div>
@@ -70,6 +84,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                     <table class="styled_item_table">
                         <thead>
                             <tr>
+                                <th>LOCATOR CODE</th>
                                 <th>ITEM CODE</th>
                                 <th>BAR CODE</th>
                                 <th>ITEM NO</th>
@@ -83,7 +98,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                         </thead>
                         <tbody id="main_table_body">
                             <tr class="empty-row">
-                                <td colspan="9" style="text-align: center; color: #888;">No items added yet. Click "Add Item" to select.</td>
+                                <td colspan="10" style="text-align: center; color: #888;">No items added yet. Click "Add Item" to select.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -122,6 +137,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                         <thead>
                             <tr>
                                 <th width="40"><input type="checkbox" id="selectAll"> <label for="selectAll">All</label></th>
+                                <th>LOCATOR CODE</th>
                                 <th>ITEM CODE</th>
                                 <th>BARCODE</th>
                                 <th>ITEM DESCRIPTION</th>
@@ -137,6 +153,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                                 <?php while ($row = mysqli_fetch_assoc($items_query)): ?>
                                     <tr>
                                         <td><input type="checkbox" class="row_checkbox"></td>
+                                        <td class="item_locator"><?= htmlspecialchars($row['item_locator']); ?></td>
                                         <td class="item_code"><strong><?= htmlspecialchars($row['item_code']); ?></strong></td>
                                         <td class="item_barcode"><?= htmlspecialchars($row['item_barcode']); ?></td>
                                         <td class="item_desc"><?= htmlspecialchars($row['item_desc']); ?></td>
@@ -149,7 +166,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="9" style="text-align: center;">No items found in database.</td>
+                                    <td colspan="10" style="text-align: center;">No items found in database.</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -179,6 +196,7 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                         <table class="styled_item_table">
                             <thead>
                                 <tr>
+                                    <th>LOCATOR CODE</th>
                                     <th>ITEM CODE</th>
                                     <th>BARCODE</th>
                                     <th>ITEM NO</th>
@@ -186,12 +204,14 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
                                     <th>ITEM UOM</th>
                                     <th>FIRST LOC</th>
                                     <th>SECOND LOC</th>
+                                    <th>REMARKS</th>
+                                    <th>ADDED BY</th>
                                     <th>DATE POSTED</th>
                                 </tr>
                             </thead>
                             <tbody id="posted_table_body">
                                 <tr>
-                                    <td colspan="7" style="text-align: center;">Loading posted items...</td>
+                                    <td colspan="11" style="text-align: center;">Loading posted items...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -214,9 +234,9 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
     </div>
 
     <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
-    <script src="<?php echo $base_path; ?>./assets/js/flatpickr.js"></script>
-    <script src="<?php echo $base_path; ?>./assets/js/modal_item.js"></script>
-    <script src="assets/js/sweetalert.js"></script>
+    <script src="<?php echo $base_path; ?>/assets/js/flatpickr.js"></script>
+    <script src="<?php echo $base_path; ?>/assets/js/modal_item.js"></script>
+    <script src="<?php echo $base_path; ?>/assets/js/sweetalert.js"></script>
 
 </body>
 

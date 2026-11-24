@@ -1,68 +1,45 @@
 <?php
 session_start();
-$base_path = './';
-require_once 'header.php';
-include "config/config.php";
 
 $current_logged_userid = $_SESSION['user_id'] ?? $_SESSION['oUserid'] ?? null;
+
+if (!$current_logged_userid && !isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$base_path = '..';
+
+require_once __DIR__ . '/header.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../controller/PermissionController.php';
 
 if (!$current_logged_userid) {
     header("Location: index.php");
     exit();
 }
 
-// Module ID para sa User Accounts / Permissions
-$permission_module_id = 3;
-
-// Fetch current user access rights
-$chk_stmt = $conn->prepare("SELECT oMain, oEdit, oSave FROM tbl_access WHERE oUserid = ? AND oModuleid = ?");
-$chk_stmt->bind_param("ii", $current_logged_userid, $permission_module_id);
-$chk_stmt->execute();
-$current_user_access = $chk_stmt->get_result()->fetch_assoc();
-
-$is_admin = isset($_SESSION['role']) && strtolower($_SESSION['role']) === 'admin';
-
-// View Access Check (pwede ra siya makasulod para makakita)
-$has_view_access = $current_user_access && ($current_user_access['oMain'] == 1 || $current_user_access['oView'] == 1 || $current_user_access['oEdit'] == 1);
-
-if (!$is_admin && !$has_view_access) {
-    header("Location: user_account.php?error=unauthorized");
-    exit();
-}
-
-// Save/Edit Permission Check (Ipasa sa JavaScript)
-$can_save_permission = $is_admin || ($current_user_access && ($current_user_access['oSave'] == 1 || $current_user_access['oEdit'] == 1));
-
-// Validate Target User ID
 if (!isset($_GET['oUserid']) || empty($_GET['oUserid'])) {
     header("Location: user_account.php");
     exit();
 }
 
 $target_userid = intval($_GET['oUserid']);
+$role = $_SESSION['role'] ?? '';
 
-$user_stmt = $conn->prepare("SELECT name, role FROM users WHERE oUserid = ?");
-$user_stmt->bind_param("i", $target_userid);
-$user_stmt->execute();
-$target_user = $user_stmt->get_result()->fetch_assoc();
+$permissionController = new PermissionController($conn);
+$viewData = $permissionController->loadPermissionViewData((int)$current_logged_userid, $role, $target_userid);
 
-if (!$target_user) {
-    header("Location: user_account.php");
+if (!$viewData['ok']) {
+    header("Location: " . $viewData['redirect']);
     exit();
 }
 
-// Fetch existing permissions for target user
-$access_data = [];
-$acc_stmt = $conn->prepare("SELECT * FROM tbl_access WHERE oUserid = ?");
-$acc_stmt->bind_param("i", $target_userid);
-$acc_stmt->execute();
-$acc_result = $acc_stmt->get_result();
-
-while ($row = $acc_result->fetch_assoc()) {
-    $access_data[$row['oModuleid']] = $row;
-}
-
-$modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModuleid ASC");
+$target_user = $viewData['target_user'];
+$access_data = $viewData['access_data'];
+$modules_list = $viewData['modules'];
+$actions = $viewData['actions'];
+$can_save_permission = $viewData['can_save_permission'];
 ?>
 
 <!DOCTYPE html>
@@ -72,16 +49,16 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Permissions - <?= htmlspecialchars($target_user['name']); ?></title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="node_modules/sweetalert2/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>/node_modules/sweetalert2/dist/sweetalert2.min.css">
 </head>
 
 <body>
-    <?php include $base_path . 'includes/sidebar.php'; ?>
+    <?php include $base_path . '/includes/sidebar.php'; ?>
     <div id="main">
         <div class="wrapper">
             <div class="main_con">
-                <form id="permissionsForm" action="save_permissions.php" method="POST">
+                <form id="permissionsForm" action="<?php echo $base_path; ?>/save_permissions.php" method="POST">
                     <input type="hidden" name="target_userid" value="<?= $target_userid; ?>">
 
                     <div class="permissions_container">
@@ -109,16 +86,13 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php
-                                    if ($modules_result && mysqli_num_rows($modules_result) > 0):
-                                        $actions = ['oMain', 'oAdd', 'oEdit', 'oView', 'oSave', 'oPost', 'oCancel', 'oPrint', 'oDiscount', 'oSend', 'oSalesassistant', 'oSupervisor', 'oManager', 'oAudit'];
-
-                                        while ($mod = mysqli_fetch_assoc($modules_result)):
+                                    <?php if (!empty($modules_list)): ?>
+                                        <?php foreach ($modules_list as $mod):
                                             $mod_id = $mod['oModuleid'];
                                             $mod_name = $mod['oModulename'];
                                             $user_acc = $access_data[$mod_id] ?? [];
                                             $is_dashboard = ($mod_id == 4);
-                                    ?>
+                                        ?>
                                             <tr>
                                                 <td class="text-center"><?= $mod_id; ?></td>
                                                 <td class="text-left module_name"><?= htmlspecialchars($mod_name); ?></td>
@@ -145,10 +119,8 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
                                                     </td>
                                                 <?php endforeach; ?>
                                             </tr>
-                                        <?php
-                                        endwhile;
-                                    else:
-                                        ?>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
                                         <tr>
                                             <td colspan="16" class="text-center">No modules found in the database.</td>
                                         </tr>
@@ -166,7 +138,7 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
         </div>
     </div>
 
-    <script src="assets/js/sweetalert.js"></script>
+    <script src="<?php echo $base_path; ?>/assets/js/sweetalert.js"></script>
     <script src="<?= $base_path; ?>assets/js/sidebar_button.js"></script>
 
     <script>
@@ -226,9 +198,7 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
                     cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Susiha kon naay save access:
                         if (!userCanSave) {
-                            // Pakita og Access Denied SweetAlert kon walay permiso
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Access Denied!',
@@ -236,7 +206,6 @@ $modules_result = mysqli_query($conn, "SELECT * FROM tbl_module ORDER BY oModule
                                 confirmButtonColor: '#d33'
                             });
                         } else {
-                            // Kon permitted, i-submit ang form
                             form.submit();
                         }
                     }

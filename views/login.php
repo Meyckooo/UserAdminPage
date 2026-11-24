@@ -1,6 +1,9 @@
 <?php
 session_start();
-require 'config/config.php';
+require '../config/config.php';
+
+// Base path padulong sa project root tungod kay naa sa views/ ang login.php
+$basePath = '..';
 
 $errors = [
     'login' => $_SESSION['login_error'] ?? '',
@@ -28,7 +31,7 @@ function isActiveForm(string $formName, string $activeForm): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="<?= $basePath; ?>/assets/css/style.css">
 </head>
 
 <body>
@@ -38,11 +41,11 @@ function isActiveForm(string $formName, string $activeForm): string {
             <div class="form_box <?= isActiveForm('login', $activeForm); ?>" id="login-form">
                 <h2>Login</h2>
                 <?= showError($errors['login']); ?>
-                <form action="action.php" method="post">
+                <form action="<?= $basePath; ?>/user_action.php" method="post">
                     <input type="text" name="username" placeholder="Username" required>
                     <div class="login_input_field">
                         <input id="password" type="password" name="password" placeholder="Password" required>
-                        <i><img src="assets/images/eyeclose.png" id="eyeicon"></i>
+                        <i><img src="<?= $basePath; ?>/assets/images/eyeclose.png" id="eyeicon"></i>
                     </div>
                     <button type="submit" name="login">Login</button>
                     <p>Don't have an account? <a href="#" onclick="showForm('register-form')">Register</a></p>
@@ -52,13 +55,13 @@ function isActiveForm(string $formName, string $activeForm): string {
             <div class="form_box <?= isActiveForm('register', $activeForm); ?>" id="register-form">
                 <h2>Register</h2>
                 <?= showError($errors['register']); ?>
-                <form action="action.php" method="post">
+                <form action="<?= $basePath; ?>/user_action.php" method="post">
                     <input type="text" name="name" placeholder="Name" required>
                     <input type="text" name="username" placeholder="Username" required>
                     <input type="email" name="email" placeholder="Email" required>
                     <div class="login_input_field">
                         <input id="password_reg" type="password" name="password" placeholder="Password" required>
-                        <i><img src="assets/images/eyeclose.png" id="eyeicon_reg"></i>
+                        <i><img src="<?= $basePath; ?>/assets/images/eyeclose.png" id="eyeicon_reg"></i>
                     </div>
                     <select name="role" required>
                         <option value="">--Select Role--</option>
@@ -76,8 +79,8 @@ function isActiveForm(string $formName, string $activeForm): string {
         </div>
     </div>
 
-    <script src="assets/js/script.js"></script>
-    <script src="assets/js/sweetalert.js"></script>
+    <script src="<?= $basePath; ?>/assets/js/script.js"></script>
+    <script src="<?= $basePath; ?>/assets/js/sweetalert.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
         const inactiveMsg = <?= json_encode($inactiveError); ?>;

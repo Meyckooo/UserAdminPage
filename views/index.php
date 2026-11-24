@@ -1,14 +1,16 @@
 <?php
-$base_path = './';
-
 session_start();
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../check_access.php';
+
+$base_path = '..';
+
 
 // Check if the user is logged in
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +25,7 @@ if (!isset($_SESSION['username'])) {
 </head>
 
 <body>
-    <?php include $base_path . 'includes/sidebar.php'; ?>
+    <?php include $base_path . '/includes/sidebar.php'; ?>
     <div id="banner">
         <div class="wrapper">
             <div class="bnr_con">
@@ -33,14 +35,14 @@ if (!isset($_SESSION['username'])) {
                     <a class="global_btn" href="#">Click Here</a>
                 </div>
                 <div class="bnr_image">
-                    <figure><img src="assets/images/slider-right-img.png" alt=""></figure>
+                    <figure><img src="<?php echo $base_path; ?>/assets/images/slider-right-img.png" alt=""></figure>
                 </div>
             </div>
         </div>
     </div>
     <div id="middle">
         <div class="middle_left_img">
-            <figure><img src="assets/images/power-ds-img.png" alt="Tablet"></figure>
+            <figure><img src="<?php echo $base_path; ?>/assets/images/power-ds-img.png" alt="Tablet"></figure>
         </div>
         <div class="wrapper">
             <div class="middle_con">
@@ -65,7 +67,7 @@ if (!isset($_SESSION['username'])) {
 
     <script src="<?php echo $base_path; ?>/assets/js/modal_item.js"></script>
     <script src="<?php echo $base_path; ?>assets/js/sidebar_button.js"></script>
-    <script src="assets/js/sweetalert.js"></script>
+    <script src="<?php echo $base_path; ?>/assets/js/sweetalert.js"></script>
 
 </body>
 
