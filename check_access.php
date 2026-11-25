@@ -38,3 +38,22 @@ function renderModulePermissionScript($module_id): void
 {
     getAccessController()->renderModulePermissionScript(intval($module_id), $_SESSION ?? []);
 }
+
+function requirePageAccess(
+    $module_id,
+    $column = 'oMain',
+    $custom_message = '',
+    $loginUrl = 'login.php',
+    $redirectUrl = 'index.php',
+    $basePath = '..'
+): void {
+    getAccessController()->requirePageAccess(
+        intval($module_id),
+        (string) $column,
+        $_SESSION ?? [],
+        (string) $custom_message,
+        (string) $loginUrl,
+        (string) $redirectUrl,
+        (string) $basePath
+    );
+}

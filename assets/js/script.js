@@ -16,10 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
         eyeicon.onclick = function() {
             if (password.type === "password") {
                 password.type = "text";
-                eyeicon.src = "assets/images/eyeopen.png";
+                eyeicon.src = "../assets/images/eyeopen.png";
             } else {
                 password.type = "password";
-                eyeicon.src = "assets/images/eyeclose.png";
+                eyeicon.src = "../assets/images/eyeclose.png";
             }
         };
     }

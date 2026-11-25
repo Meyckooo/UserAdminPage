@@ -1,17 +1,25 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../check_access.php';
 
-if (!isset($_SESSION['username'])) {
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../controller/AccessController.php';
+
+if (!isset($_SESSION['username']) && !isset($_SESSION['oUserid']) && !isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
 
 $base_path = '..';
-
 $locator_module_id = 16; // o ang oModuleid sa imong page sa tbl_module
-renderModulePermissionScript($locator_module_id);
+
+$accessController = new AccessController($conn);
+
+if (!$accessController->hasPermission($locator_module_id, 'oMain', $_SESSION)) {
+    header("Location: ../403.php");
+    exit();
+}
+
+$accessController->renderModulePermissionScript($locator_module_id, $_SESSION);
 $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
 ?>
 
@@ -22,8 +30,8 @@ $items_query = mysqli_query($conn, "SELECT * FROM tbl_item");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modal Item</title>
-    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/style.css">
-    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/media.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/style.min.css">
+    <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/media.min.css">
     <!-- Flatpickr CSS & Theme -->
     <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/flatpickr.css">
     <link rel="stylesheet" href="<?php echo $base_path; ?>/assets/css/material_blue.css">

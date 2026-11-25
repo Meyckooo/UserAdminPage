@@ -128,4 +128,27 @@ class AccessController
 
         echo "<script>window.USER_PERMISSIONS = " . json_encode($perms) . ";</script>\n";
     }
+
+    // Nag-enforce sa login session ug module permission para sa page access
+    public function requirePageAccess(
+        int $moduleId,
+        string $column,
+        array $sessionData,
+        string $customMessage = '',
+        string $loginUrl = 'login.php',
+        string $redirectUrl = 'index.php',
+        string $basePath = '..'
+    ): void {
+        $hasSession = isset($sessionData['username'])
+            || isset($sessionData['oUserid'])
+            || isset($sessionData['user_id']);
+
+        if (!$hasSession) {
+            header("Location: {$loginUrl}");
+            exit();
+        }
+
+        $this->checkAccess($moduleId, $column, $sessionData, $customMessage, $redirectUrl, $basePath);
+    }
+
 }

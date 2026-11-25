@@ -69,7 +69,7 @@ function isActiveForm(string $formName, string $activeForm): string {
                         <option value="admin">Admin</option>
                     </select>
                     <?php
-                        
+                    
                     ?>
                     <input type="text" name="active" value="Active" style="pointer-events:none;">
                     <button type="submit" name="register">Register</button>
@@ -79,7 +79,7 @@ function isActiveForm(string $formName, string $activeForm): string {
         </div>
     </div>
 
-    <script src="<?= $basePath; ?>/assets/js/script.js"></script>
+    <script src="<?= $basePath; ?>/assets/js/script.min.js"></script>
     <script src="<?= $basePath; ?>/assets/js/sweetalert.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
