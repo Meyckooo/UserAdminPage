@@ -1751,16 +1751,36 @@
 
     /* 403 CSS */
 .body-bg {
-  background: var(--secondary-color);
+  background: url(../images/403-bg.png) center/contain no-repeat, #78a0f3;
   padding: 0;
   margin: 0;
   overflow: hidden;
 }
 
+.for03_btn_parent {
+  position: absolute;
+  top: 47%;
+  left: 35.7%;
+  transform: translate(-50%,-50%);
+  width: fit-content;
+}
+
 .for03_btn.primary_btn {
-  background: var(--primary-color) !important;
+  background: var(--secondary-color) !important;
   line-height: 45px;
   margin: 0;
+  width: 150px;
+  display: block;
+  border-radius: 60px;
+  text-align: center;
+  text-decoration: none;
+  color: #000;
+  font: 700 16px/55px var(--font1);
+  transition: all 0.5s ease-in-out;
+}
+
+.for03_btn.primary_btn:hover{
+    transform: scale(0.9);
 }
 
 .main_container {

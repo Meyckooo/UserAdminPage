@@ -1,40 +1,82 @@
 /* Tablet & Small Laptops (<= 1024px) */
+@media screen and (max-width: 1500px) {
+  .for03_btn_parent {
+    left: 33.2%;
+  }
+}
+
+@media screen and (max-width: 1400px) {
+  .body-bg {
+    background:
+      url(../images/403-bg.png) center/cover no-repeat,
+      #78a0f3;
+  }
+
+  .for03_btn_parent {
+    left: 31.2%;
+  }
+  .for03_btn.primary_btn {
+    width: 130px;
+    font: 700 14px/48px var(--font1);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .for03_btn_parent {
+    left: 29.2%;
+  }
+}
+
 @media screen and (max-width: 1024px) {
-    .item_parent {
-        flex-direction: column; /* Stacks form on top of table */
-        align-items: center;
-        gap: 20px;
-    }
+  .item_parent {
+    flex-direction: column; /* Stacks form on top of table */
+    align-items: center;
+    gap: 20px;
+  }
 
-    .item_form_container {
-        width: 100%;
-        max-width: 350px;
-        /* DISABLED STICKY & SCROLLING HERE */
-        position: static !important;
-        max-height: none !important;
-        overflow-y: visible !important;
-    }
+  .item_form_container {
+    width: 100%;
+    max-width: 350px;
+    /* DISABLED STICKY & SCROLLING HERE */
+    position: static !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
 
-    .item_table_details {
-        width: 100%;
-    }
+  .item_table_details {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .for03_btn_parent {
+    left: 21.2%;
+  }
 }
 
 /* Mobile Screens (<= 600px) */
 @media screen and (max-width: 600px) {
-    .item_form_container {
-        max-width: 100%;
-        padding: 16px;
-    }
+  .item_form_container {
+    max-width: 100%;
+    padding: 16px;
+  }
 
-    .styled_item_table th, 
-    .styled_item_table td {
-        padding: 10px 12px;
-        font-size: 0.82rem;
-    }
+  .styled_item_table th,
+  .styled_item_table td {
+    padding: 10px 12px;
+    font-size: 0.82rem;
+  }
 
-    .btn-submit {
-        padding: 12px;
-        font-size: 0.95rem;
-    }
+  .btn-submit {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+
+  .body-bg {
+    background-size: 150% auto;
+  }
+  .for03_btn.primary_btn {
+    width: 120px;
+    font: 700 13px/40px var(--font1);
+  }
 }
