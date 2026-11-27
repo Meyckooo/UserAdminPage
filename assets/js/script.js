@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. Show / Hide Password Feature
     const eyeicon = document.getElementById("eyeicon");
     const password = document.getElementById("password");
+    const eyeicon_reg = document.getElementById("eyeicon_reg");
+    const password_reg = document.getElementById("password_reg");
 
     if (eyeicon && password) {
         eyeicon.onclick = function() {
@@ -20,6 +22,18 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 password.type = "password";
                 eyeicon.src = "../assets/images/eyeclose.png";
+            }
+        };
+    }
+
+     if (eyeicon_reg && password_reg) {
+        eyeicon_reg.onclick = function() {
+            if (password_reg.type === "password") {
+                password_reg.type = "text";
+                eyeicon_reg.src = "../assets/images/eyeopen.png";
+            } else {
+                password_reg.type = "password";
+                eyeicon_reg.src = "../assets/images/eyeclose.png";
             }
         };
     }
